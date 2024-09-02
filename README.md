@@ -1,6 +1,4 @@
 # Sir-Val.github.io
-<!DOCTYPE html>
-My Webpage
 <html lang="en">
 <head>
     <meta charset="UTF-8">
