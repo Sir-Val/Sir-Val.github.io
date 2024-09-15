@@ -1,17 +1,47 @@
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sum of Two Numbers</title>
+    
+    <!-- Include PyScript -->
+    <link rel="stylesheet" href="https://pyscript.net/latest/pyscript.css" />
+    <script defer src="https://pyscript.net/latest/pyscript.js"></script>
 </head>
 <body>
-    <div class="container">
-        <h1>How to Fix Flooding in Bacoor, Cavite</h1>
-        <p>
-            Flooding in Bacoor, Cavite, is a persistent challenge that impacts the daily lives of residents and the region's economic stability. The primary causes include rapid urbanization, inadequate drainage systems, and the city's low-lying geographical location. To mitigate these issues, an integrated approach is essential. This includes upgrading and maintaining drainage infrastructure to accommodate heavy rainfall, implementing effective waste management practices to prevent clogging of waterways, and enforcing zoning laws to control unplanned urban expansion. Additionally, reforestation and the creation of green spaces can help absorb rainwater, reducing surface runoff and easing the burden on drainage systems.
-        </p>
-        <p>
-            Moreover, community involvement and education are crucial in building resilience against flooding. Local government units should collaborate with residents to promote flood preparedness, such as early warning systems and evacuation plans. Public awareness campaigns can educate citizens on the importance of proper waste disposal and the role of sustainable practices in flood prevention. Investing in modern technologies like real-time monitoring systems can also enhance response strategies, allowing for timely interventions. By adopting a holistic and collaborative approach, Bacoor can develop long-term solutions that address the root causes of flooding, ensuring a safer and more sustainable future for its residents.
-        </p>
-    </div>
+    <h1>Sum of Two Numbers</h1>
+
+    <!-- Input fields for numbers -->
+    <label for="num1">Enter the first number:</label>
+    <input type="number" id="num1" step="any"><br><br>
+    
+    <label for="num2">Enter the second number:</label>
+    <input type="number" id="num2" step="any"><br><br>
+    
+    <!-- Button to trigger sum calculation -->
+    <button id="calculate-btn">Calculate Sum</button>
+
+    <!-- Placeholder for the result -->
+    <p id="result"></p>
+
+    <!-- Python code using PyScript -->
+    <py-script>
+        from pyscript import Element
+
+        def calculate_sum(*args):
+            # Retrieve the values from the input fields
+            num1 = float(Element("num1").element.value)
+            num2 = float(Element("num2").element.value)
+            
+            # Calculate the sum
+            result = num1 + num2
+            
+            # Display the result
+            Element("result").element.innerHTML = f"The sum of the two numbers is: {result}"
+
+        # Bind the function to the button click event
+        Element("calculate-btn").element.onclick = calculate_sum
+    </py-script>
 </body>
 </html>
