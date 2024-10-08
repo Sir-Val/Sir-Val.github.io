@@ -4,17 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PyScript Example</title>
-    
+
     <!-- Include PyScript CDN -->
     <link rel="stylesheet" href="https://pyscript.net/latest/pyscript.css">
     <script defer src="https://pyscript.net/latest/pyscript.js"></script>
-    
+
     <!-- Add custom styling -->
     <style>
         body {
             font-family: Arial, sans-serif;
             margin: 20px;
-            padding: 0;
             background-color: #f4f4f9;
         }
 
@@ -34,24 +33,23 @@
 
     <h1>PyScript HTML Example</h1>
 
+    <!-- Define a div to hold the paragraph -->
+    <div id="output" class="styled-paragraph"></div>
+
     <!-- PyScript block -->
     <py-script>
-        # Python code to render the paragraph
-        from pyodide.ffi import to_js
+        # Python code to create and display HTML content
 
-        # Sample paragraph
+        # Define the content of the paragraph
         paragraph = """
-        Welcome to PyScript! This is a simple HTML file rendering Python inside the browser. 
-        PyScript allows you to run Python code directly within an HTML file. With it, you can create web applications using Python 
-        and style them with HTML and CSS. Try experimenting with different Python code to see what you can build!
+        Welcome to PyScript! This paragraph is rendered using Python in the browser without any JavaScript.
+        PyScript allows you to run Python code directly within an HTML file. This enables developers to create
+        web applications with Python while styling the output with HTML and CSS. Explore and see what you can build!
         """
 
-        # Create a paragraph element in HTML
-        doc = to_js(pyodide.runPython("document"))
-        p = doc.createElement("p")
-        p.innerHTML = paragraph
-        p.className = "styled-paragraph"
-        doc.body.appendChild(p)
+        # Find the div with id 'output' and set its innerHTML to the paragraph text
+        output_element = Element("output")
+        output_element.write(paragraph)
     </py-script>
 
 </body>
