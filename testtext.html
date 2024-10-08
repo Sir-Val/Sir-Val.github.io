@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PyScript Example</title>
+    
+    <!-- Include PyScript CDN -->
+    <link rel="stylesheet" href="https://pyscript.net/latest/pyscript.css">
+    <script defer src="https://pyscript.net/latest/pyscript.js"></script>
+    
+    <!-- Add custom styling -->
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 0;
+            background-color: #f4f4f9;
+        }
+
+        .styled-paragraph {
+            color: #333;
+            font-size: 1.2em;
+            background-color: #e0f7fa;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid #00796b;
+            width: 50%;
+            margin: 20px auto;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>PyScript HTML Example</h1>
+
+    <!-- PyScript block -->
+    <py-script>
+        # Python code to render the paragraph
+        from pyodide.ffi import to_js
+
+        # Sample paragraph
+        paragraph = """
+        Welcome to PyScript! This is a simple HTML file rendering Python inside the browser. 
+        PyScript allows you to run Python code directly within an HTML file. With it, you can create web applications using Python 
+        and style them with HTML and CSS. Try experimenting with different Python code to see what you can build!
+        """
+
+        # Create a paragraph element in HTML
+        doc = to_js(pyodide.runPython("document"))
+        p = doc.createElement("p")
+        p.innerHTML = paragraph
+        p.className = "styled-paragraph"
+        doc.body.appendChild(p)
+    </py-script>
+
+</body>
+</html>
