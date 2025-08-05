@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -91,6 +90,6 @@
       <input type="button" value="I'm Feeling Lucky">
     </div>
   </div>
-  <footer>Google Clone by YourName · Hosted on GitHub Pages</footer>
+  <footer>Google Clone by Sir Val · Hosted on GitHub Pages</footer>
 </body>
 </html>
