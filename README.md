@@ -1,95 +1,113 @@
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Google Clone</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Val Patrick F. Fabregas - Computer Engineer</title>
   <style>
     body {
-      margin: 0;
-      padding: 0;
       font-family: Arial, sans-serif;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
+      margin: 0;
+      padding: 2em;
+      line-height: 1.6;
+      background-color: #f4f4f4;
+      color: #333;
     }
-
-    .logo {
-      margin-bottom: 20px;
+    header {
+      background-color: #0077b6;
+      color: white;
+      padding: 1em 2em;
     }
-
-    .logo img {
-      width: 272px;
-      height: 92px;
+    h1, h2 {
+      margin-bottom: 0.2em;
     }
-
-    .search-container {
-      width: 100%;
-      max-width: 600px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
+    section {
+      background-color: white;
+      padding: 1.5em;
+      margin: 1em 0;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     }
-
-    .search-box {
-      width: 100%;
-      display: flex;
-      border: 1px solid #dfe1e5;
-      border-radius: 24px;
-      padding: 10px 20px;
-      box-shadow: 0 1px 6px rgba(32,33,36,0.28);
+    ul {
+      margin-top: 0;
     }
-
-    .search-box input {
-      flex: 1;
-      border: none;
-      outline: none;
-      font-size: 16px;
-    }
-
-    .buttons {
-      margin-top: 20px;
-    }
-
-    .buttons input {
-      margin: 5px;
-      padding: 10px 20px;
-      font-size: 14px;
-      border: 1px solid #f8f9fa;
-      border-radius: 4px;
-      background-color: #f8f9fa;
-      cursor: pointer;
-    }
-
-    .buttons input:hover {
-      background-color: #f1f3f4;
-    }
-
-    footer {
-      position: absolute;
-      bottom: 0;
-      width: 100%;
-      text-align: center;
-      padding: 15px;
-      background-color: #f2f2f2;
-      font-size: 14px;
+    .contact, .footer {
+      font-size: 0.9em;
+      color: #555;
     }
   </style>
 </head>
 <body>
-  <div class="logo">
-    <img src="https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png" alt="Google Logo">
-  </div>
-  <div class="search-container">
-    <div class="search-box">
-      <input type="text" placeholder="Search Google or type a URL">
-    </div>
-    <div class="buttons">
-      <input type="button" value="Google Search">
-      <input type="button" value="I'm Feeling Lucky">
-    </div>
-  </div>
-  <footer>Google Clone by Sir Val · Hosted on GitHub Pages</footer>
+
+<header>
+  <h1>Engr. Val Patrick F. Fabregas</h1>
+  <p>Computer Engineer | Educator | Cisco Certified Instructor</p>
+</header>
+
+<section>
+  <h2>Professional Summary</h2>
+  <p>Results-driven Technical Engineer with over 20 years of experience in academic instruction, IT systems support, and curriculum development. A certified Cisco instructor and former department chair, experienced in handling technical training, infrastructure support, and engineering education at top institutions in the Philippines.</p>
+</section>
+
+<section>
+  <h2>Experience Highlights</h2>
+  <ul>
+    <li><strong>Technical Support Professional</strong> – Sykes Asia, Inc. (2004–Present)</li>
+    <li><strong>Part-Time Faculty</strong> – Mapua Institute of Technology (2005–2006)</li>
+    <li><strong>Department Chair</strong> – IATEC Computer College (2003–2004)</li>
+    <li><strong>Full-Time Faculty</strong> – Technological Institute of the Philippines (2000–2003)</li>
+    <li><strong>IT Staff (OJT)</strong> – World Vision Development Foundation (1999–2000)</li>
+  </ul>
+</section>
+
+<section>
+  <h2>Education</h2>
+  <ul>
+    <li>Master of Engineering in Computer Engineering – Pamantasan ng Lungsod ng Maynila</li>
+    <li>B.S. in Computer Engineering – Technological Institute of the Philippines</li>
+  </ul>
+</section>
+
+<section>
+  <h2>Certifications & Training</h2>
+  <ul>
+    <li>Cisco Certified Academic Instructor – Semesters 1 to 4</li>
+    <li>LAN Technology Training – Meralco Foundation Institute</li>
+    <li>PC Hardware, Network, and System Troubleshooting</li>
+    <li>Kodak Digital Photography, Oracle, Microsoft Office, AutoCAD, ISO 9001</li>
+  </ul>
+</section>
+
+<section>
+  <h2>Seminars & Speaking Engagements</h2>
+  <p>Frequent speaker and facilitator on ICT Networking, AutoCAD, Web Development, and CADD in Engineering Education across TIP, UST, Arellano, and Imus Institute.</p>
+</section>
+
+<section>
+  <h2>Awards & Recognitions</h2>
+  <ul>
+    <li>Most Outstanding Trainee – Aren Computer Services</li>
+    <li>Plaque of Recognition – IATEC Department Chair</li>
+    <li>Certificate of Eligibility – Civil Service Commission</li>
+  </ul>
+</section>
+
+<section>
+  <h2>Languages</h2>
+  <p>Fluent in English, Filipino, and Visayan</p>
+</section>
+
+<section class="contact">
+  <h2>Contact</h2>
+  <p>Email: <a href="mailto:engr_vpatrick@yahoo.com">engr_vpatrick@yahoo.com</a></p>
+  <p>Mobile: 0921 473 9110</p>
+  <p>Address: 5 Ilustre St., Brgy. Mariano Espeleta III, Imus, Cavite</p>
+  <p>Portfolio: <a href="http://www.geocities.com/teacher_val">teacher_val (GeoCities)</a></p>
+</section>
+
+<footer class="footer">
+  <p>&copy; 2025 Engr. Val Patrick F. Fabregas. All Rights Reserved.</p>
+</footer>
+
 </body>
 </html>
