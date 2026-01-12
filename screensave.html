@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lines Screensaver</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background: #000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            font-family: Arial, sans-serif;
+        }
+        canvas {
+            display: none;
+        }
+        .login-container, .settings-container {
+            background: #1a1a1a;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.5);
+            text-align: center;
+            min-width: 300px;
+        }
+        h2 {
+            color: #fff;
+            margin-bottom: 20px;
+        }
+        input {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: none;
+            border-radius: 5px;
+            background: #2a2a2a;
+            color: #fff;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+        input:focus {
+            outline: 2px solid #4a9eff;
+        }
+        button {
+            width: 100%;
+            padding: 12px;
+            margin-top: 15px;
+            border: none;
+            border-radius: 5px;
+            background: #4a9eff;
+            color: #fff;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        button:hover {
+            background: #357abd;
+        }
+        .error {
+            color: #ff4a4a;
+            margin-top: 10px;
+            font-size: 14px;
+        }
+        label {
+            color: #ccc;
+            display: block;
+            text-align: left;
+            margin-top: 10px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container" id="loginPage">
+        <h2>Screensaver Login</h2>
+        <input type="text" id="username" placeholder="Username" autocomplete="username">
+        <input type="password" id="password" placeholder="Password" autocomplete="current-password">
+        <button onclick="login()">Login</button>
+        <div class="error" id="loginError"></div>
+    </div>
+
+    <div class="settings-container" id="settingsPage" style="display: none;">
+        <h2>Screensaver Settings</h2>
+        <label for="numLines">Number of Lines:</label>
+        <input type="number" id="numLines" value="8" min="1" max="50">
+        <button onclick="startScreensaver()">Start Screensaver</button>
+    </div>
+
+    <canvas id="canvas"></canvas>
+
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        let lines = [];
+        let animationId;
+
+        function login() {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const errorDiv = document.getElementById('loginError');
+
+            if (username === 'admin' && password === 'admin') {
+                document.getElementById('loginPage').style.display = 'none';
+                document.getElementById('settingsPage').style.display = 'block';
+                errorDiv.textContent = '';
+            } else {
+                errorDiv.textContent = 'Invalid username or password';
+            }
+        }
+
+        function startScreensaver() {
+            const numLines = parseInt(document.getElementById('numLines').value) || 8;
+            
+            document.getElementById('settingsPage').style.display = 'none';
+            canvas.style.display = 'block';
+            
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            
+            initScreensaver(numLines);
+        }
+
+        class Line {
+            constructor() {
+                this.x1 = Math.random() * canvas.width;
+                this.y1 = Math.random() * canvas.height;
+                this.x2 = Math.random() * canvas.width;
+                this.y2 = Math.random() * canvas.height;
+                this.dx1 = (Math.random() - 0.5) * 2;
+                this.dy1 = (Math.random() - 0.5) * 2;
+                this.dx2 = (Math.random() - 0.5) * 2;
+                this.dy2 = (Math.random() - 0.5) * 2;
+                this.hue = Math.random() * 360;
+            }
+            
+            update() {
+                this.x1 += this.dx1;
+                this.y1 += this.dy1;
+                this.x2 += this.dx2;
+                this.y2 += this.dy2;
+                
+                if (this.x1 < 0 || this.x1 > canvas.width) this.dx1 *= -1;
+                if (this.y1 < 0 || this.y1 > canvas.height) this.dy1 *= -1;
+                if (this.x2 < 0 || this.x2 > canvas.width) this.dx2 *= -1;
+                if (this.y2 < 0 || this.y2 > canvas.height) this.dy2 *= -1;
+                
+                this.hue += 0.5;
+                if (this.hue > 360) this.hue = 0;
+            }
+            
+            draw() {
+                ctx.strokeStyle = `hsl(${this.hue}, 70%, 60%)`;
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                ctx.moveTo(this.x1, this.y1);
+                ctx.lineTo(this.x2, this.y2);
+                ctx.stroke();
+            }
+        }
+
+        function initScreensaver(numLines) {
+            lines = [];
+            for (let i = 0; i < numLines; i++) {
+                lines.push(new Line());
+            }
+            animate();
+        }
+        
+        function animate() {
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            lines.forEach(line => {
+                line.update();
+                line.draw();
+            });
+            
+            animationId = requestAnimationFrame(animate);
+        }
+
+        // Allow Enter key to submit login
+        document.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' && document.getElementById('loginPage').style.display !== 'none') {
+                login();
+            }
+        });
+        
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+    </script>
+</body>
+</html>
