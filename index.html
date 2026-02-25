@@ -2,112 +2,608 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Val Patrick F. Fabregas - Technical Engineer</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 2em;
-      line-height: 1.6;
-      background-color: #f4f4f4;
-      color: #333;
-    }
-    header {
-      background-color: #0077b6;
-      color: white;
-      padding: 1em 2em;
-    }
-    h1, h2 {
-      margin-bottom: 0.2em;
-    }
-    section {
-      background-color: white;
-      padding: 1.5em;
-      margin: 1em 0;
-      border-radius: 8px;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    }
-    ul {
-      margin-top: 0;
-    }
-    .contact, .footer {
-      font-size: 0.9em;
-      color: #555;
-    }
-  </style>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Portfolio of Engr. Val Patrick F. Fabregas — Director of Information Technology, Computer Engineering Educator, IoT Researcher, IT Consultant. MTA Certified, MEng (c)." />
+  <meta name="keywords" content="Val Patrick Fabregas, Computer Engineering, IT Manager, IoT Research, Cavite State University, Neuronet AI, Philippines" />
+  <meta name="author" content="Engr. Val Patrick F. Fabregas" />
+
+  <!-- Open Graph (for social sharing previews) -->
+  <meta property="og:title"       content="Engr. Val Patrick F. Fabregas — Portfolio" />
+  <meta property="og:description" content="Director of IT | Computer Engineering Educator | IoT Researcher | MTA Certified" />
+  <meta property="og:type"        content="website" />
+
+  <!-- Fonts: Cormorant Garamond (display) + DM Sans (body) + JetBrains Mono (code) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=DM+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+
+  <!-- Main Stylesheet -->
+  <link rel="stylesheet" href="css/style.css" />
+
+  <title>Engr. Val Patrick F. Fabregas | Portfolio</title>
 </head>
+
 <body>
 
-<header>
-  <h1>ENGR. VAL PATRICK FABREGAS</h1>
-  <p>Technical Engineer | Educator | Cisco Certified Instructor</p>
-</header>
+  <!-- ============================================================
+       NAVIGATION
+       ============================================================ -->
+  <nav id="navbar" role="navigation" aria-label="Main navigation">
+    <!-- Brand / Logo -->
+    <a href="#hero" class="nav-brand" aria-label="Home">
+      <span class="name">Val Patrick Fabregas</span>
+      <span class="cred">MTA &nbsp;·&nbsp; MEng(c) &nbsp;·&nbsp; Computer Engineering</span>
+    </a>
 
-<section>
-  <h2>Professional Summary</h2>
-  <p>Results-driven Technical Engineer with over 20 years of experience in academic instruction, IT systems support, and curriculum development. A certified Cisco instructor and former department chair, experienced in handling technical training, infrastructure support, and engineering education at top institutions in the Philippines.</p>
-</section>
+    <!-- Desktop Links -->
+    <ul class="nav-links" role="list">
+      <li><a href="#about"      class="active">About</a></li>
+      <li><a href="#experience">Experience</a></li>
+      <li><a href="#education" >Education</a></li>
+      <li><a href="#skills"    >Skills</a></li>
+      <li><a href="#subjects"  >Courses</a></li>
+      <li><a href="#contact"   >Contact</a></li>
+    </ul>
 
-<section>
-  <h2>Experience Highlights</h2>
-  <ul>
-    <li><strong>Technical Support Professional</strong> – Sykes Asia, Inc. (2004–Present)</li>
-    <li><strong>Part-Time Faculty</strong> – Mapua Institute of Technology (2005–2006)</li>
-    <li><strong>Department Chair</strong> – IATEC Computer College (2003–2004)</li>
-    <li><strong>Full-Time Faculty</strong> – Technological Institute of the Philippines (2000–2003)</li>
-    <li><strong>IT Staff (OJT)</strong> – World Vision Development Foundation (1999–2000)</li>
-  </ul>
-</section>
+    <!-- Mobile hamburger button -->
+    <button class="hamburger" aria-label="Toggle mobile menu" aria-expanded="false">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+  </nav>
 
-<section>
-  <h2>Education</h2>
-  <ul>
-    <li>Master of Engineering in Computer Engineering – Pamantasan ng Lungsod ng Maynila</li>
-    <li>B.S. in Computer Engineering – Technological Institute of the Philippines</li>
-  </ul>
-</section>
+  <!-- Mobile Navigation Drawer -->
+  <div class="nav-drawer" role="dialog" aria-label="Mobile navigation">
+    <a href="#about"      >About</a>
+    <a href="#experience" >Experience</a>
+    <a href="#education"  >Education</a>
+    <a href="#skills"     >Skills</a>
+    <a href="#subjects"   >Courses</a>
+    <a href="#contact"    >Contact</a>
+  </div>
 
-<section>
-  <h2>Certifications & Training</h2>
-  <ul>
-    <li>Cisco Certified Academic Instructor – Semesters 1 to 4</li>
-    <li>LAN Technology Training – Meralco Foundation Institute</li>
-    <li>PC Hardware, Network, and System Troubleshooting</li>
-    <li>Kodak Digital Photography, Oracle, Microsoft Office, AutoCAD, ISO 9001</li>
-  </ul>
-</section>
+  <!-- ============================================================
+       HERO SECTION
+       ============================================================ -->
+  <section id="hero" aria-label="Introduction">
+    <div class="hero-inner">
 
-<section>
-  <h2>Seminars & Speaking Engagements</h2>
-  <p>Frequent speaker and facilitator on ICT Networking, AutoCAD, Web Development, and CADD in Engineering Education across TIP, UST, Arellano, and Imus Institute.</p>
-</section>
+      <!-- Left: Text -->
+      <div class="hero-text">
+        <div class="hero-tag">
+          <span class="hero-tag-dot"></span>
+          Available for Consultation &amp; Collaboration
+        </div>
 
-<section>
-  <h2>Awards & Recognitions</h2>
-  <ul>
-    <li>Most Outstanding Trainee – Aren Computer Services</li>
-    <li>Plaque of Recognition – IATEC Department Chair</li>
-    <li>Certificate of Eligibility – Civil Service Commission</li>
-  </ul>
-</section>
+        <h1 class="hero-name">
+          <span class="hero-name-prefix">Engr.</span>
+          Val Patrick<br />F. Fabregas
+        </h1>
 
-<section>
-  <h2>Languages</h2>
-  <p>Fluent in English, Filipino, and Visayan</p>
-</section>
+        <p class="hero-credentials">MTA &nbsp;·&nbsp; MEng(c) &nbsp;·&nbsp; TOEIC Certified</p>
 
-<section class="contact">
-  <h2>Contact</h2>
-  <p>Email: <a href="mailto:engr_vpatrick@yahoo.com">engr_vpatrick@yahoo.com</a></p>
-  <p>Mobile: 0921 473 9110</p>
-  <p>Address: 5 Ilustre St., Brgy. Mariano Espeleta III, Imus, Cavite</p>
-  <p>Portfolio: <a href="http://www.geocities.com/teacher_val">teacher_val (GeoCities)</a></p>
-</section>
+        <p class="hero-tagline">
+          <strong>Director of IT &amp; Computer Engineering Educator</strong> — bridging enterprise IT leadership,
+          academic instruction, and emerging technology research in the Philippines.
+        </p>
 
-<footer class="footer">
-  <p>&copy; 2025 Engr. Val Patrick F. Fabregas. All Rights Reserved.</p>
-</footer>
+        <!-- Typing effect subtitle (JS fills this) -->
+        <p style="font-family: var(--ff-mono); font-size: .8rem; color: var(--slate-lt); margin-bottom: 40px;">
+          &gt;&nbsp;<span id="typing-text" style="color: var(--gold-lt);"></span><span style="animation: pulse 1s infinite; color: var(--gold);">|</span>
+        </p>
+
+        <div class="hero-cta">
+          <a href="#subjects" class="btn btn-gold">View Courses</a>
+          <a href="#contact"  class="btn btn-ghost">Get in Touch</a>
+        </div>
+      </div>
+
+      <!-- Right: Animated Badge Visual -->
+      <div class="hero-visual" aria-hidden="true">
+        <div class="profile-badge">
+          <div class="badge-ring"></div>
+          <div class="badge-ring"></div>
+          <div class="badge-ring"></div>
+          <div class="orbit-dot"></div>
+          <div class="orbit-dot"></div>
+          <div class="orbit-dot"></div>
+          <div class="badge-center">
+            <div class="badge-initials">VPF</div>
+            <div class="badge-title">Engr. Val Patrick<br />F. Fabregas</div>
+          </div>
+        </div>
+      </div>
+    </div><!-- /.hero-inner -->
+
+    <!-- Scroll indicator -->
+    <div class="hero-scroll" aria-hidden="true">
+      <span>Scroll</span>
+      <div class="scroll-line"></div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       ABOUT SECTION
+       ============================================================ -->
+  <section id="about" class="section" aria-label="About">
+    <div class="container">
+      <div class="about-grid">
+
+        <!-- Left: Stats -->
+        <div class="about-stats" aria-label="Career highlights">
+          <div class="stat-card">
+            <div class="stat-number"><span data-count="25">0</span><span>+</span></div>
+            <div class="stat-label">Years of Experience</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-number"><span data-count="7">0</span></div>
+            <div class="stat-label">Courses Taught</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-number"><span data-count="4">0</span></div>
+            <div class="stat-label">Companies Served</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-number"><span data-count="2">0</span></div>
+            <div class="stat-label">Graduate Degrees Pursued</div>
+          </div>
+        </div>
+
+        <!-- Right: Bio & Contact -->
+        <div class="about-content">
+          <p class="section-eyebrow">About Me</p>
+          <h2 class="section-title">Engineering Expertise, <span>Academic Heart</span></h2>
+
+          <p class="about-bio">
+            <strong>"I'm Val Patrick Fabregas — you can call me Sir Val."</strong>
+            That's usually my opening greeting whenever I meet my students on the first day of class.
+            Through years of teaching college, serving as a technical trainer in a BPO, and now leading
+            IT operations as a Director — that title of <em>"Sir"</em> has become a mark of both
+            mentorship and professional leadership.
+          </p>
+          <p class="about-bio">
+            I'm a <strong>Computer Engineering professional</strong> who thrives at the intersection of
+            enterprise IT management, higher education, and emerging technologies like IoT and AI.
+            Currently serving as <strong>Director of Information Technology</strong> at
+            <strong>Neuronet AI Innovations</strong> in Bacoor, Cavite, I bring over two decades of
+            progressive experience spanning IT service delivery, team leadership, technical training,
+            and academic instruction.
+          </p>
+          <p class="about-bio">
+            My personal philosophy: <em>interoperability</em> — the ability to work with and adapt to
+            different systems, teams, and challenges. Whether I'm managing an IT service desk,
+            consulting on structural engineering software, or guiding students through algorithms and
+            calculus, I engage with full commitment and adaptability.
+          </p>
+
+          <!-- Contact quick chips -->
+          <div class="contact-chips">
+            <a href="mailto:engr_vpatrick@yahoo.com" class="chip" aria-label="Email">
+              <!-- Mail icon (inline SVG) -->
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+              engr_vpatrick@yahoo.com
+            </a>
+            <a href="tel:+639214739110" class="chip" aria-label="Phone">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 10.23 19.79 19.79 0 0 1 1.61 1.6a2 2 0 0 1 1.99-2.18h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 6.3a16 16 0 0 0 6 6l.92-.91a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+              +63 921 473 9110
+            </a>
+            <a href="https://www.linkedin.com/in/val-patrick-fabregas" target="_blank" rel="noopener" class="chip" aria-label="LinkedIn profile">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+              LinkedIn Profile
+            </a>
+            <div class="chip" aria-label="Location">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+              City of Imus, Cavite, Philippines
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /.about-grid -->
+    </div>
+  </section>
+
+  <!-- ============================================================
+       EXPERIENCE SECTION
+       ============================================================ -->
+  <section id="experience" class="section section--dark" aria-label="Work Experience">
+    <div class="container">
+      <p class="section-eyebrow">Career Timeline</p>
+      <h2 class="section-title">Professional <span>Experience</span></h2>
+
+      <div class="timeline" role="list">
+
+        <!-- Current Role -->
+        <div class="timeline-item" role="listitem">
+          <div class="timeline-dot" aria-hidden="true"></div>
+          <div class="timeline-period">
+            Aug 2024 — Present
+            <span class="badge-current">Current</span>
+            <span class="period-badge">~1 yr+</span>
+          </div>
+          <h3 class="timeline-role">Director of Information Technology</h3>
+          <p class="timeline-company">Neuronet AI Innovations</p>
+          <p class="timeline-location">📍 Molino, Bacoor, Cavite</p>
+          <p class="timeline-desc">
+            Leading the IT department of an AI-focused innovations firm, overseeing infrastructure,
+            digital strategy, cybersecurity posture, and technology roadmap. Aligning IT operations
+            with research and product development goals in artificial intelligence and intelligent systems.
+          </p>
+        </div>
+
+        <!-- transcosmos - SIM -->
+        <div class="timeline-item" role="listitem">
+          <div class="timeline-dot" aria-hidden="true"></div>
+          <div class="timeline-period">Oct 2022 — Jul 2023 <span class="period-badge">10 mos</span></div>
+          <h3 class="timeline-role">Service Implementation Manager</h3>
+          <p class="timeline-company">transcosmos Information Systems Ltd.</p>
+          <p class="timeline-location">📍 McKinley Hill Cyberpark, Fort Bonifacio, Taguig City</p>
+          <p class="timeline-desc">
+            Managed end-to-end service implementation projects for enterprise clients, coordinating
+            cross-functional teams across IT infrastructure, helpdesk operations, and client onboarding.
+            Ensured SLA compliance and seamless transition from project delivery to steady-state operations.
+          </p>
+        </div>
+
+        <!-- transcosmos - SDM -->
+        <div class="timeline-item" role="listitem">
+          <div class="timeline-dot" aria-hidden="true"></div>
+          <div class="timeline-period">May 2019 — Oct 2022 <span class="period-badge">3 yrs 6 mos</span></div>
+          <h3 class="timeline-role">Service Delivery Manager</h3>
+          <p class="timeline-company">transcosmos Information Systems Ltd.</p>
+          <p class="timeline-location">📍 McKinley Hill Cyberpark, Fort Bonifacio, Taguig City</p>
+          <p class="timeline-desc">
+            Oversaw service delivery performance for multiple client accounts, driving continuous
+            improvement initiatives, team performance metrics, and stakeholder relationship management.
+            Led escalation management and monthly service review (MSR) reporting.
+          </p>
+        </div>
+
+        <!-- transcosmos - ITSD Lead -->
+        <div class="timeline-item" role="listitem">
+          <div class="timeline-dot" aria-hidden="true"></div>
+          <div class="timeline-period">Oct 2018 — Apr 2019 <span class="period-badge">7 mos</span></div>
+          <h3 class="timeline-role">IT Service Desk Lead</h3>
+          <p class="timeline-company">transcosmos Information Systems Ltd.</p>
+          <p class="timeline-location">📍 McKinley Hill Cyberpark, Fort Bonifacio, Taguig City</p>
+          <p class="timeline-desc">
+            Led the IT service desk team, managing ticket queues, first-level support operations,
+            and technical escalations. Established SOPs for incident management and improved
+            first-call resolution rates.
+          </p>
+        </div>
+
+        <!-- Sykes -->
+        <div class="timeline-item" role="listitem">
+          <div class="timeline-dot" aria-hidden="true"></div>
+          <div class="timeline-period">Jun 2004 — Oct 2018 <span class="period-badge">14 yrs 5 mos</span></div>
+          <h3 class="timeline-role">Operations Team Manager</h3>
+          <p class="timeline-company">Sykes Asia (BPO)</p>
+          <p class="timeline-location">📍 K-Pointe Technology Centre, New Manila, Quezon City</p>
+          <p class="timeline-desc">
+            Managed operations and technical training programs for one of the Philippines' largest
+            BPOs. Led teams in call center operations, outsourcing delivery, and technical support,
+            while serving concurrently as a technical trainer for onboarding and upskilling programs.
+          </p>
+        </div>
+
+      </div><!-- /.timeline -->
+    </div>
+  </section>
+
+  <!-- ============================================================
+       EDUCATION SECTION
+       ============================================================ -->
+  <section id="education" class="section section--mid" aria-label="Education">
+    <div class="container">
+      <p class="section-eyebrow">Academic Background</p>
+      <h2 class="section-title">Education &amp; <span>Qualifications</span></h2>
+
+      <div class="edu-grid">
+
+        <!-- Current Graduate Study -->
+        <div class="edu-card">
+          <div class="edu-icon">🎓</div>
+          <p class="edu-level">Graduate Studies — In Progress</p>
+          <h3 class="edu-degree">Master of Engineering (MEng)<br />Computer Engineering</h3>
+          <p class="edu-school">Cavite State University</p>
+          <p class="edu-year">March 2023 — March 2025</p>
+        </div>
+
+        <!-- PLM Graduate -->
+        <div class="edu-card">
+          <div class="edu-icon">🏛️</div>
+          <p class="edu-level">Graduate Studies</p>
+          <h3 class="edu-degree">Masters of Engineering<br />Computer Engineering</h3>
+          <p class="edu-school">Pamantasan ng Lungsod ng Maynila (PLM)</p>
+          <p class="edu-year">2000</p>
+        </div>
+
+        <!-- Undergraduate -->
+        <div class="edu-card">
+          <div class="edu-icon">⚙️</div>
+          <p class="edu-level">Undergraduate Degree</p>
+          <h3 class="edu-degree">Bachelor of Science in<br />Computer Engineering</h3>
+          <p class="edu-school">Technological Institute of the Philippines (TIP)</p>
+          <p class="edu-year">June 1995 — March 2000</p>
+        </div>
+
+        <!-- High School -->
+        <div class="edu-card">
+          <div class="edu-icon">📚</div>
+          <p class="edu-level">Secondary Education</p>
+          <h3 class="edu-degree">High School Diploma</h3>
+          <p class="edu-school">Imus Institute College</p>
+          <p class="edu-year">1991 — 1995</p>
+        </div>
+
+      </div><!-- /.edu-grid -->
+    </div>
+  </section>
+
+  <!-- ============================================================
+       SKILLS & CERTIFICATIONS SECTION
+       ============================================================ -->
+  <section id="skills" class="section" aria-label="Skills and Certifications">
+    <div class="container">
+      <p class="section-eyebrow">Expertise</p>
+      <h2 class="section-title">Skills &amp; <span>Certifications</span></h2>
+
+      <div class="skills-grid">
+
+        <!-- Certifications -->
+        <div>
+          <p class="skills-subtitle">Professional Certifications</p>
+          <div class="cert-list">
+
+            <div class="cert-card">
+              <div class="cert-icon" aria-hidden="true">🪟</div>
+              <div>
+                <p class="cert-name">Microsoft Technology Associate (MTA)</p>
+                <p class="cert-org">Windows Operating System Fundamentals · Microsoft</p>
+              </div>
+            </div>
+
+            <div class="cert-card">
+              <div class="cert-icon" aria-hidden="true">🌐</div>
+              <div>
+                <p class="cert-name">TOEIC — Test of English for International Communication</p>
+                <p class="cert-org">ETS Global · English Proficiency</p>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Skills -->
+        <div>
+          <p class="skills-subtitle">Core Competencies</p>
+          <div class="skill-tags">
+            <!-- Technical -->
+            <span class="skill-tag skill-tag--dark">IT Service Management</span>
+            <span class="skill-tag skill-tag--dark">Computer Networks</span>
+            <span class="skill-tag skill-tag--dark">Database Management (DBMS)</span>
+            <span class="skill-tag skill-tag--dark">Python Programming</span>
+            <span class="skill-tag skill-tag--dark">IoT Research</span>
+            <span class="skill-tag skill-tag--dark">Artificial Intelligence</span>
+            <span class="skill-tag skill-tag--dark">Systems Administration</span>
+            <span class="skill-tag skill-tag--dark">Web Development</span>
+            <!-- Management -->
+            <span class="skill-tag skill-tag--gold">Team Management</span>
+            <span class="skill-tag skill-tag--gold">Service Delivery</span>
+            <span class="skill-tag skill-tag--gold">Outsourcing Operations</span>
+            <span class="skill-tag skill-tag--gold">Technical Training</span>
+            <!-- Academic -->
+            <span class="skill-tag skill-tag--outline">Higher Education</span>
+            <span class="skill-tag skill-tag--outline">Curriculum Development</span>
+            <span class="skill-tag skill-tag--outline">IT Consulting</span>
+          </div>
+        </div>
+
+      </div><!-- /.skills-grid -->
+    </div>
+  </section>
+
+  <!-- ============================================================
+       SUBJECTS / COURSES SECTION
+       ============================================================ -->
+  <section id="subjects" class="section section--dark" aria-label="Courses Taught">
+    <div class="container">
+      <p class="section-eyebrow">Academic Courses</p>
+      <h2 class="section-title">Subjects <span>Taught</span></h2>
+
+      <p class="subjects-intro">
+        A curated list of college-level subjects previously taught by Engr. Fabregas in Computer Engineering
+        and Information Technology programs. Click on any course to learn more.
+      </p>
+
+      <div class="subjects-grid" role="list">
+
+        <!-- 1. Artificial Intelligence -->
+        <a href="subjects/artificial-intelligence.html" class="subject-card" role="listitem" aria-label="Artificial Intelligence course">
+          <div class="subject-icon" aria-hidden="true">🤖</div>
+          <div class="subject-info">
+            <h3 class="subject-name">Artificial Intelligence</h3>
+            <p class="subject-desc">Machine learning, neural networks, intelligent agents, and AI problem-solving paradigms.</p>
+          </div>
+          <span class="subject-arrow" aria-hidden="true">→</span>
+        </a>
+
+        <!-- 2. Calculus -->
+        <a href="subjects/calculus.html" class="subject-card" role="listitem" aria-label="Calculus course">
+          <div class="subject-icon" aria-hidden="true">∫</div>
+          <div class="subject-info">
+            <h3 class="subject-name">Calculus</h3>
+            <p class="subject-desc">Differential and integral calculus — the mathematical foundation of engineering analysis.</p>
+          </div>
+          <span class="subject-arrow" aria-hidden="true">→</span>
+        </a>
+
+        <!-- 3. Linear Algebra -->
+        <a href="subjects/linear-algebra.html" class="subject-card" role="listitem" aria-label="Linear Algebra course">
+          <div class="subject-icon" aria-hidden="true">𝓜</div>
+          <div class="subject-info">
+            <h3 class="subject-name">Linear Algebra</h3>
+            <p class="subject-desc">Vectors, matrices, linear transformations, eigenvalues, and systems of equations.</p>
+          </div>
+          <span class="subject-arrow" aria-hidden="true">→</span>
+        </a>
+
+        <!-- 4. Programming 2 -->
+        <a href="subjects/programming-2.html" class="subject-card" role="listitem" aria-label="Programming 2 course">
+          <div class="subject-icon" aria-hidden="true">💻</div>
+          <div class="subject-info">
+            <h3 class="subject-name">Programming 2</h3>
+            <p class="subject-desc">Object-oriented programming, data structures, and advanced application development concepts.</p>
+          </div>
+          <span class="subject-arrow" aria-hidden="true">→</span>
+        </a>
+
+        <!-- 5. Systems Administration -->
+        <a href="subjects/systems-administration.html" class="subject-card" role="listitem" aria-label="Systems Administration and Maintenance course">
+          <div class="subject-icon" aria-hidden="true">🖥️</div>
+          <div class="subject-info">
+            <h3 class="subject-name">Systems Administration &amp; Maintenance</h3>
+            <p class="subject-desc">OS configuration, server management, network security, and enterprise system upkeep.</p>
+          </div>
+          <span class="subject-arrow" aria-hidden="true">→</span>
+        </a>
+
+        <!-- 6. Web Systems & Technology -->
+        <a href="subjects/web-systems.html" class="subject-card" role="listitem" aria-label="Web Systems and Technology course">
+          <div class="subject-icon" aria-hidden="true">🌐</div>
+          <div class="subject-info">
+            <h3 class="subject-name">Web Systems &amp; Technology</h3>
+            <p class="subject-desc">Web architecture, client-server models, HTML/CSS/JS, back-end frameworks, and web standards.</p>
+          </div>
+          <span class="subject-arrow" aria-hidden="true">→</span>
+        </a>
+
+        <!-- 7. Design Analysis of Algorithms -->
+        <a href="subjects/design-analysis-algorithms.html" class="subject-card" role="listitem" aria-label="Design Analysis of Algorithms course">
+          <div class="subject-icon" aria-hidden="true">📐</div>
+          <div class="subject-info">
+            <h3 class="subject-name">Design &amp; Analysis of Algorithms</h3>
+            <p class="subject-desc">Algorithm complexity, sorting, searching, dynamic programming, graphs, and NP-completeness.</p>
+          </div>
+          <span class="subject-arrow" aria-hidden="true">→</span>
+        </a>
+
+      </div><!-- /.subjects-grid -->
+    </div>
+  </section>
+
+  <!-- ============================================================
+       CONTACT SECTION
+       ============================================================ -->
+  <section id="contact" class="section" aria-label="Contact Information">
+    <div class="container">
+      <div class="contact-grid">
+
+        <!-- Left: Info -->
+        <div>
+          <p class="section-eyebrow">Get In Touch</p>
+          <h2 class="section-title">Let's <span>Connect</span></h2>
+          <p style="color: var(--slate); line-height: 1.8; margin-bottom: 8px;">
+            Whether you're looking for an IT consultant, a technical educator, or a strategic
+            technology partner — I'd love to hear from you.
+          </p>
+
+          <div class="contact-info-list">
+
+            <div class="contact-info-item">
+              <div class="contact-info-icon" aria-hidden="true">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+              </div>
+              <div>
+                <p class="contact-info-label">Email Address</p>
+                <p class="contact-info-value"><a href="mailto:engr_vpatrick@yahoo.com">engr_vpatrick@yahoo.com</a></p>
+              </div>
+            </div>
+
+            <div class="contact-info-item">
+              <div class="contact-info-icon" aria-hidden="true">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 10.23 19.79 19.79 0 0 1 1.61 1.6a2 2 0 0 1 1.99-2.18h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 6.3a16 16 0 0 0 6 6l.92-.91a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+              </div>
+              <div>
+                <p class="contact-info-label">Mobile / WhatsApp</p>
+                <p class="contact-info-value"><a href="tel:+639214739110">+63 921 473 9110</a></p>
+              </div>
+            </div>
+
+            <div class="contact-info-item">
+              <div class="contact-info-icon" aria-hidden="true">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+              </div>
+              <div>
+                <p class="contact-info-label">Address</p>
+                <p class="contact-info-value">Blk 7 Lot 39 Chamberi St., Montefaro Village West,<br />Brgy. Alapan 1-B, City of Imus, Cavite 4103</p>
+              </div>
+            </div>
+
+            <div class="contact-info-item">
+              <div class="contact-info-icon" aria-hidden="true">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+              </div>
+              <div>
+                <p class="contact-info-label">LinkedIn</p>
+                <p class="contact-info-value">
+                  <a href="https://www.linkedin.com/in/val-patrick-fabregas" target="_blank" rel="noopener">
+                    linkedin.com/in/val-patrick-fabregas
+                  </a>
+                </p>
+              </div>
+            </div>
+
+          </div><!-- /.contact-info-list -->
+        </div>
+
+        <!-- Right: Business Card Visual -->
+        <div class="contact-card-visual" aria-hidden="true">
+          <p class="ccv-label">Professional Card</p>
+          <p class="ccv-name">Engr. Val Patrick<br />F. Fabregas</p>
+          <p class="ccv-title">
+            MTA &nbsp;·&nbsp; MEng(c)<br />
+            Director of IT &nbsp;·&nbsp; Educator &nbsp;·&nbsp; IoT Researcher<br />
+            IT Consultant · Technical Trainer
+          </p>
+          <div class="ccv-divider"></div>
+          <a href="https://www.linkedin.com/in/val-patrick-fabregas" target="_blank" rel="noopener" class="ccv-link">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+            Connect on LinkedIn &nbsp;→
+          </a>
+        </div>
+
+      </div><!-- /.contact-grid -->
+    </div>
+  </section>
+
+  <!-- ============================================================
+       FOOTER
+       ============================================================ -->
+  <footer role="contentinfo">
+    <div class="container">
+      <div class="footer-inner">
+        <div>
+          <p class="footer-name">Engr. Val Patrick F. Fabregas</p>
+          <p class="footer-copy">&copy; <span id="current-year"></span> &nbsp;·&nbsp; MTA &nbsp;·&nbsp; MEng(c) &nbsp;·&nbsp; All rights reserved.</p>
+        </div>
+        <nav class="footer-links" aria-label="Footer navigation">
+          <a href="#about"     >About</a>
+          <a href="#experience">Experience</a>
+          <a href="#subjects"  >Courses</a>
+          <a href="#contact"   >Contact</a>
+          <a href="https://www.linkedin.com/in/val-patrick-fabregas" target="_blank" rel="noopener">LinkedIn</a>
+        </nav>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scroll-to-top button -->
+  <button id="scroll-top" aria-label="Scroll to top">↑</button>
+
+  <!-- JavaScript (deferred for performance) -->
+  <script src="js/main.js" defer></script>
 
 </body>
 </html>
