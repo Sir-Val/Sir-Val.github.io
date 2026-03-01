@@ -263,51 +263,139 @@ ul    { list-style: none; }
 
 .hero-cta { display: flex; gap: 16px; flex-wrap: wrap; animation: fadeUp .8s var(--ease) .4s both; }
 
-/* Profile badge visual */
-.hero-visual { display: flex; justify-content: center; align-items: center; animation: fadeIn 1s var(--ease) .5s both; }
+/* ================================================================
+   HERO PHOTO FRAME
+   Replaces the animated initials badge with the actual portrait.
+   Keeps the rotating ring motif; adds a corner-bracket framing
+   device and a gold-gradient name plate at the bottom.
+   ================================================================ */
 
-.profile-badge { position: relative; width: 340px; height: 340px; }
+.hero-photo-frame {
+  position: relative;
+  width: 360px;
+  height: 420px;
+  flex-shrink: 0;
+  animation: fadeIn 1s var(--ease) .5s both;
+}
 
-.badge-ring {
+/* ── Rotating decorative rings (kept from original design) ── */
+.photo-ring {
   position: absolute;
   border-radius: 50%;
-  border: 1.5px solid var(--border);
+  pointer-events: none;
 }
-.badge-ring:nth-child(1) { inset: 0; border-style: dashed; animation: spin 24s linear infinite; }
-.badge-ring:nth-child(2) { inset: 22px; animation: spin 36s linear infinite reverse; }
-.badge-ring:nth-child(3) { inset: 44px; border-style: dotted; animation: spin 18s linear infinite; }
+.photo-ring--1 {
+  inset: -28px;
+  border: 1.5px dashed rgba(201,149,42,.35);
+  animation: spin 28s linear infinite;
+}
+.photo-ring--2 {
+  inset: -10px;
+  border: 1px solid rgba(201,149,42,.18);
+  animation: spin 42s linear infinite reverse;
+}
 
-.badge-center {
-  position: absolute;
-  inset: 64px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, var(--navy-lt) 0%, var(--navy-mid) 100%);
-  border: 2px solid var(--gold);
-  display: flex; flex-direction: column;
-  align-items: center; justify-content: center;
-  gap: 6px;
-  box-shadow: var(--shadow-lg), inset 0 0 40px rgba(201,149,42,.08);
-}
-.badge-initials {
-  font-family: var(--ff-display);
-  font-size: 3rem; font-weight: 700;
-  color: var(--gold); line-height: 1;
-}
-.badge-title {
-  font-family: var(--ff-mono);
-  font-size: .55rem; letter-spacing: .1em;
-  color: var(--slate-lt); text-align: center;
-  padding: 0 14px; line-height: 1.5;
-}
-.orbit-dot {
+/* ── Orbit accent dots ── */
+.photo-orbit-dot {
   position: absolute;
   width: 10px; height: 10px;
-  background: var(--gold); border-radius: 50%;
-  box-shadow: 0 0 12px var(--gold);
+  border-radius: 50%;
+  background: var(--gold);
+  box-shadow: 0 0 14px rgba(201,149,42,.7);
+  pointer-events: none;
+  z-index: 2;
 }
-.orbit-dot:nth-child(4) { top: 10px; left: 50%; transform: translateX(-50%); }
-.orbit-dot:nth-child(5) { bottom: 10px; left: 50%; transform: translateX(-50%); background: var(--slate-lt); box-shadow: 0 0 12px var(--slate-lt); }
-.orbit-dot:nth-child(6) { left: 10px; top: 50%; transform: translateY(-50%); width: 6px; height: 6px; }
+.photo-orbit-dot--top    { top: -4px;    left: 50%;  transform: translateX(-50%); }
+.photo-orbit-dot--right  { right: -4px;  top: 38%;   width: 7px; height: 7px; background: var(--slate-lt); box-shadow: 0 0 10px rgba(176,196,216,.6); }
+.photo-orbit-dot--bottom { bottom: -4px; left: 32%;  width: 6px; height: 6px; }
+
+/* ── Gold corner brackets (engineering-blueprint aesthetic) ── */
+.corner-bracket {
+  position: absolute;
+  width: 22px; height: 22px;
+  pointer-events: none;
+  z-index: 3;
+}
+.corner-bracket--tl { top: 2px;    left: 2px;   border-top: 2px solid var(--gold); border-left: 2px solid var(--gold); }
+.corner-bracket--tr { top: 2px;    right: 2px;  border-top: 2px solid var(--gold); border-right: 2px solid var(--gold); }
+.corner-bracket--bl { bottom: 2px; left: 2px;   border-bottom: 2px solid var(--gold); border-left: 2px solid var(--gold); }
+.corner-bracket--br { bottom: 2px; right: 2px;  border-bottom: 2px solid var(--gold); border-right: 2px solid var(--gold); }
+
+/* ── Photo inner container ── */
+.photo-inner {
+  position: absolute;
+  inset: 0;
+  border-radius: 16px;
+  overflow: hidden;
+  border: 2px solid rgba(201,149,42,.45);
+  box-shadow:
+    var(--shadow-lg),
+    0 0 0 1px rgba(201,149,42,.12),
+    inset 0 0 60px rgba(0,0,0,.3);
+  z-index: 1;
+}
+
+/* ── The photograph itself ── */
+.hero-photo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;   /* keep face in frame */
+  display: block;
+  /* Subtle warm toning to blend the B&W photo with the gold palette */
+  filter: contrast(1.05) brightness(0.96);
+  transition: transform .6s var(--ease), filter .6s var(--ease);
+}
+.hero-photo-frame:hover .hero-photo {
+  transform: scale(1.03);
+  filter: contrast(1.08) brightness(1.0);
+}
+
+/* ── Name plate overlay (bottom of photo) ── */
+.photo-overlay {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  padding: 40px 20px 18px;
+  background: linear-gradient(to top, rgba(11,28,50,.92) 0%, rgba(11,28,50,.6) 60%, transparent 100%);
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  pointer-events: none;
+}
+.photo-overlay-name {
+  font-family: var(--ff-display);
+  font-size: .92rem;
+  font-weight: 700;
+  color: var(--white);
+  letter-spacing: .02em;
+  line-height: 1.2;
+}
+.photo-overlay-cred {
+  font-family: var(--ff-mono);
+  font-size: .6rem;
+  letter-spacing: .18em;
+  color: var(--gold);
+  text-transform: uppercase;
+}
+
+/* ── Responsive: show photo on tablet too, just smaller ── */
+@media (max-width: 900px) {
+  /* Re-enable hero-visual on mobile (was display:none for the badge) */
+  .hero-visual {
+    display: flex !important;
+    justify-content: center;
+  }
+  .hero-photo-frame {
+    width: 260px;
+    height: 300px;
+  }
+  .photo-ring--1 { inset: -18px; }
+  .photo-ring--2 { inset: -6px; }
+}
+
+@media (max-width: 500px) {
+  .hero-photo-frame { width: 210px; height: 250px; }
+}
 
 /* Scroll cue */
 .hero-scroll {
@@ -755,7 +843,6 @@ footer {
    ================================================================ */
 @media (max-width: 900px) {
   .hero-inner   { grid-template-columns: 1fr; gap: 40px; text-align: center; }
-  .hero-visual  { display: none; }
   .hero-cta     { justify-content: center; }
   .hero-tagline { margin-inline: auto; }
 

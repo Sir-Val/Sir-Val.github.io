@@ -99,18 +99,37 @@
         </div>
       </div>
 
-      <!-- Right: Animated Badge Visual -->
-      <div class="hero-visual" aria-hidden="true">
-        <div class="profile-badge">
-          <div class="badge-ring"></div>
-          <div class="badge-ring"></div>
-          <div class="badge-ring"></div>
-          <div class="orbit-dot"></div>
-          <div class="orbit-dot"></div>
-          <div class="orbit-dot"></div>
-          <div class="badge-center">
-            <div class="badge-initials">VPF</div>
-            <div class="badge-title">Engr. Val Patrick<br />F. Fabregas</div>
+      <!-- Right: Profile Photo -->
+      <div class="hero-visual">
+        <div class="hero-photo-frame">
+          <!-- Decorative rotating rings -->
+          <div class="photo-ring photo-ring--1" aria-hidden="true"></div>
+          <div class="photo-ring photo-ring--2" aria-hidden="true"></div>
+
+          <!-- Decorative orbit dots -->
+          <span class="photo-orbit-dot photo-orbit-dot--top"    aria-hidden="true"></span>
+          <span class="photo-orbit-dot photo-orbit-dot--right"  aria-hidden="true"></span>
+          <span class="photo-orbit-dot photo-orbit-dot--bottom" aria-hidden="true"></span>
+
+          <!-- Corner accent brackets -->
+          <span class="corner-bracket corner-bracket--tl" aria-hidden="true"></span>
+          <span class="corner-bracket corner-bracket--tr" aria-hidden="true"></span>
+          <span class="corner-bracket corner-bracket--bl" aria-hidden="true"></span>
+          <span class="corner-bracket corner-bracket--br" aria-hidden="true"></span>
+
+          <!-- Actual photo -->
+          <div class="photo-inner">
+            <img
+              src="bw-pic-sir-val.jpeg"
+              alt="Engr. Val Patrick F. Fabregas — Director of IT and Computer Engineering Educator"
+              class="hero-photo"
+              loading="eager"
+            />
+            <!-- Gold gradient overlay at bottom -->
+            <div class="photo-overlay" aria-hidden="true">
+              <span class="photo-overlay-name">Engr. Val Patrick F. Fabregas</span>
+              <span class="photo-overlay-cred">MTA &nbsp;·&nbsp; MEng(c)</span>
+            </div>
           </div>
         </div>
       </div>
