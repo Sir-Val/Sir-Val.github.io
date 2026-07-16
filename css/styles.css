@@ -1,0 +1,1309 @@
+/*
+ * ============================================================
+ * UPHSD Molino Campus - Exam Timer
+ * College of Computer Studies
+ * University of Perpetual Help System DALTA - Molino Campus
+ * ============================================================
+ * File        : css/styles.css
+ * Description : Complete stylesheet for the Exam Timer.
+ *               Organized into logical sections:
+ *                 1. CSS Custom Properties (tokens)
+ *                 2. CSS Reset & Base
+ *                 3. Layout & Wrappers
+ *                 4. Site Header
+ *                 5. Timer Card
+ *                 6. Toolbar & Buttons
+ *                 7. Clock Display
+ *                 8. Countdown Display
+ *                 9. Instructions Block
+ *                10. Setup Modal
+ *                11. Time-Expired Overlay
+ *                12. Site Footer
+ *                13. Dark Theme Overrides
+ *                14. Animations & Keyframes
+ *                15. Responsive (Media Queries)
+ * ============================================================
+ */
+
+/* ============================================================
+   1. CSS CUSTOM PROPERTIES (DESIGN TOKENS)
+   ============================================================
+   Light theme is defined on :root.
+   Dark theme overrides are in section 13.
+   UPHSD Molino brand palette:
+     - Primary   : Maroon / Dark Red (#7f1416)
+     - Accent    : Gold / Amber      (#F5A623 / #FFB800)
+     - Highlight : Crimson Red       (#C0392B)  – used for "Finish" label
+     - Success   : Forest Green      (#217A3C)  – used for "Start" label & Start btn
+============================================================ */
+:root {
+  /* ── Brand colours ── */
+  --color-brand-navy:       #7f1416;   /* UPHSD maroon / dark red */
+  --color-brand-navy-dark:  #5c0e10;   /* darker shade for hover states */
+  --color-brand-navy-light: #a01b1e;   /* lighter shade for gradients */
+  --color-brand-gold:       #F5A623;   /* UPHSD gold accent */
+  --color-brand-gold-dark:  #d4891a;   /* darker gold for hover */
+  --color-brand-gold-light: #FFD166;   /* lighter gold for backgrounds */
+
+  /* ── Semantic colours ── */
+  --color-start:    #217A3C;   /* green – start time label & button */
+  --color-finish:   #C0392B;   /* crimson – finish time label */
+  --color-pause:    #1a72c4;   /* blue – pause button */
+  --color-warning:  #856404;   /* amber text for warning box */
+  --color-warning-bg: #fff3cd;
+  --color-warning-border: #ffc107;
+
+  /* ── Neutral palette ── */
+  --color-white:       #ffffff;
+  --color-gray-50:     #f8fafc;
+  --color-gray-100:    #f1f5f9;
+  --color-gray-200:    #e2e8f0;
+  --color-gray-300:    #cbd5e1;
+  --color-gray-400:    #94a3b8;
+  --color-gray-500:    #64748b;
+  --color-gray-600:    #475569;
+  --color-gray-700:    #334155;
+  --color-gray-800:    #1e293b;
+  --color-gray-900:    #0f172a;
+
+  /* ── Typography ── */
+  --font-family-base:   'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-size-xs:       0.75rem;    /* 12px */
+  --font-size-sm:       0.875rem;   /* 14px */
+  --font-size-base:     1rem;       /* 16px */
+  --font-size-md:       1.125rem;   /* 18px */
+  --font-size-lg:       1.25rem;    /* 20px */
+  --font-size-xl:       1.5rem;     /* 24px */
+  --font-size-2xl:      2rem;       /* 32px */
+  --font-size-3xl:      2.5rem;     /* 40px */
+  --font-size-4xl:      3.5rem;     /* 56px */
+  --font-size-5xl:      5rem;       /* 80px */
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semi:   600;
+  --font-weight-bold:   700;
+  --font-weight-black:  800;
+
+  /* ── Spacing ── */
+  --space-1:  0.25rem;   /* 4px  */
+  --space-2:  0.5rem;    /* 8px  */
+  --space-3:  0.75rem;   /* 12px */
+  --space-4:  1rem;      /* 16px */
+  --space-5:  1.25rem;   /* 20px */
+  --space-6:  1.5rem;    /* 24px */
+  --space-8:  2rem;      /* 32px */
+  --space-10: 2.5rem;    /* 40px */
+  --space-12: 3rem;      /* 48px */
+  --space-16: 4rem;      /* 64px */
+
+  /* ── Borders & Radius ── */
+  --radius-sm:  0.25rem;
+  --radius-md:  0.5rem;
+  --radius-lg:  0.75rem;
+  --radius-xl:  1rem;
+  --radius-2xl: 1.5rem;
+  --radius-full: 9999px;
+  --border-width: 1px;
+  --border-color: var(--color-gray-200);
+
+  /* ── Shadows ── */
+  --shadow-sm:  0 1px 2px rgba(0,0,0,.05);
+  --shadow-md:  0 4px 6px rgba(0,0,0,.07), 0 2px 4px rgba(0,0,0,.06);
+  --shadow-lg:  0 10px 15px rgba(0,0,0,.1),  0 4px 6px rgba(0,0,0,.05);
+  --shadow-xl:  0 20px 25px rgba(0,0,0,.12), 0 8px 10px rgba(0,0,0,.04);
+  --shadow-card: 0 2px 8px rgba(127, 20, 22, .10);
+
+  /* ── Transitions ── */
+  --transition-fast:   150ms ease;
+  --transition-base:   250ms ease;
+  --transition-slow:   400ms ease;
+
+  /* ── Component colours (Light mode) ── */
+  --bg-page:        var(--color-gray-100);
+  --bg-card:        var(--color-white);
+  --bg-modal:       var(--color-white);
+  --text-primary:   var(--color-gray-900);
+  --text-secondary: var(--color-gray-600);
+  --text-muted:     var(--color-gray-400);
+  --border-ui:      var(--color-gray-200);
+
+  /* Digit card */
+  --digit-card-bg:     var(--color-white);
+  --digit-card-border: var(--color-gray-300);
+  --digit-card-shadow: var(--shadow-md);
+  --digit-number-color: var(--color-gray-900);
+
+  /* Header */
+  --header-bg:    var(--color-brand-navy);
+  --header-text:  var(--color-white);
+  --header-sub:   rgba(255,255,255,0.70);
+}
+
+
+/* ============================================================
+   2. CSS RESET & BASE STYLES
+   ============================================================ */
+
+/* Box-sizing reset: include padding and border in element size */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* Smooth scroll for anchor links */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Body: font, background, and text defaults */
+body {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-normal);
+  line-height: 1.6;
+  color: var(--text-primary);
+  background-color: var(--bg-page);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/*
+ * CRITICAL FIX: The HTML `hidden` attribute sets display:none via the
+ * browser's user-agent stylesheet, but author-level CSS rules such as
+ * `display: flex` on .expired-overlay and .modal-overlay have higher
+ * specificity and override it — causing those elements to appear on
+ * page load even though `hidden` is present in the markup.
+ *
+ * This rule reinstates the correct behaviour: any element carrying the
+ * `hidden` attribute must never be visible, regardless of its CSS class.
+ */
+[hidden] {
+  display: none !important;
+}
+
+/* Remove list styling by default */
+ul, ol {
+  list-style: none;
+}
+
+/* Anchor defaults */
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* Images are responsive by default */
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Button resets */
+button {
+  font-family: inherit;
+  cursor: pointer;
+  border: none;
+  background: none;
+}
+
+/* Input resets */
+input, textarea {
+  font-family: inherit;
+  font-size: inherit;
+}
+
+/* Focus visible outline (accessibility) */
+:focus-visible {
+  outline: 3px solid var(--color-brand-gold);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+
+/* ============================================================
+   3. LAYOUT & WRAPPERS
+   ============================================================ */
+
+/* Main content grows to fill remaining page height */
+.app-wrapper {
+  flex: 1;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: var(--space-8) var(--space-4);
+}
+
+/* Horizontal rule divider inside the timer card */
+.divider {
+  border: none;
+  border-top: var(--border-width) solid var(--border-ui);
+  margin: var(--space-4) 0;
+}
+
+
+/* ============================================================
+   4. SITE HEADER
+   ============================================================
+   The top branding bar uses UPHSD navy + gold accent colors.
+   A golden bottom border reinforces the brand palette.
+============================================================ */
+.site-header {
+  background: var(--header-bg);
+  /* Subtle gradient for depth */
+  background: linear-gradient(135deg, var(--color-brand-navy-dark) 0%, var(--color-brand-navy) 60%, var(--color-brand-navy-light) 100%);
+  border-bottom: 4px solid var(--color-brand-gold);
+  color: var(--header-text);
+  box-shadow: var(--shadow-lg);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.site-header__inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: var(--space-3) var(--space-6);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+}
+
+/* Brand block (badge + text) */
+.site-header__brand {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+/* Circular badge displaying "UPHSD" initials */
+.brand-badge {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: var(--color-brand-gold);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 2px 8px rgba(0,0,0,.3);
+}
+
+.brand-badge__text {
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-black);
+  color: var(--color-brand-navy);
+  letter-spacing: .03em;
+  text-align: center;
+  line-height: 1.1;
+}
+
+/* University name and campus label */
+.brand-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.brand-text__university {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-white);
+  letter-spacing: .02em;
+  line-height: 1.3;
+}
+
+.brand-text__campus {
+  font-size: var(--font-size-xs);
+  color: var(--header-sub);
+  letter-spacing: .02em;
+}
+
+/* University motto / tagline */
+.site-header__tagline {
+  font-size: var(--font-size-xs);
+  font-style: italic;
+  color: var(--color-brand-gold-light);
+  letter-spacing: .03em;
+  text-align: right;
+  max-width: 200px;
+}
+
+
+/* ============================================================
+   5. TIMER CARD
+   ============================================================
+   The white card that holds all timer elements. Has a navy
+   top accent border to tie it to the university header.
+============================================================ */
+.timer-card {
+  background: var(--bg-card);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-xl);
+  border-top: 5px solid var(--color-brand-navy);
+  padding: var(--space-6) var(--space-8);
+  width: 100%;
+  max-width: 900px;
+}
+
+/* Page heading "Exam Timer" */
+.timer-card__title {
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-brand-navy);
+  text-align: center;
+  margin-bottom: var(--space-5);
+  letter-spacing: -.02em;
+}
+
+.timer-card__title i {
+  color: var(--color-brand-gold);
+  margin-right: var(--space-2);
+}
+
+/* Exam title sub-heading (populated by JS) */
+.exam-title {
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-semi);
+  color: var(--text-primary);
+  margin-bottom: var(--space-2);
+  min-height: 1em;
+}
+
+.exam-title:empty {
+  display: none; /* Hide when no title is set */
+}
+
+
+/* ============================================================
+   6. TOOLBAR & BUTTONS
+   ============================================================ */
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  align-items: center;
+  margin-bottom: var(--space-5);
+}
+
+/* ── Base button styles ── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semi);
+  transition: background-color var(--transition-fast),
+              transform var(--transition-fast),
+              box-shadow var(--transition-fast),
+              opacity var(--transition-fast);
+  white-space: nowrap;
+  user-select: none;
+  line-height: 1.4;
+}
+
+.btn:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+.btn:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+/* Disabled state */
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ── Start button: UPHSD green ── */
+.btn--start {
+  background: var(--color-start);
+  color: var(--color-white);
+}
+.btn--start:hover:not(:disabled) {
+  background: #1a6330;
+}
+
+/* ── Pause button: blue ── */
+.btn--pause {
+  background: var(--color-pause);
+  color: var(--color-white);
+}
+.btn--pause:hover:not(:disabled) {
+  background: #145fa5;
+}
+
+/* Pause button shows "Resume" text via data-state (set by JS) */
+.btn--pause[data-state="paused"]::before {
+  content: none;
+}
+
+/* ── Setup button: gray ── */
+.btn--setup {
+  background: var(--color-gray-500);
+  color: var(--color-white);
+}
+.btn--setup:hover:not(:disabled) {
+  background: var(--color-gray-600);
+}
+
+/* ── Reset button: dark gray ── */
+.btn--reset {
+  background: var(--color-gray-700);
+  color: var(--color-white);
+}
+.btn--reset:hover:not(:disabled) {
+  background: var(--color-gray-800);
+}
+
+/* ── Theme toggle button ── */
+.btn--theme {
+  background: var(--color-gray-100);
+  color: var(--color-gray-700);
+  border: var(--border-width) solid var(--border-ui);
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-md);
+}
+.btn--theme:hover {
+  background: var(--color-brand-gold-light);
+  border-color: var(--color-brand-gold);
+  color: var(--color-brand-navy);
+}
+
+/* ── Modal close button ── */
+.btn--close-modal {
+  background: var(--color-gray-700);
+  color: var(--color-white);
+  padding: var(--space-2) var(--space-5);
+}
+.btn--close-modal:hover {
+  background: var(--color-gray-800);
+}
+
+/* ── Modal save button: navy ── */
+.btn--save-setup {
+  background: var(--color-brand-navy);
+  color: var(--color-white);
+  padding: var(--space-2) var(--space-5);
+}
+.btn--save-setup:hover {
+  background: var(--color-brand-navy-dark);
+}
+
+/* ── Expired dismiss button: gold ── */
+.btn--dismiss {
+  background: var(--color-brand-gold);
+  color: var(--color-brand-navy);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-bold);
+  padding: var(--space-3) var(--space-10);
+  border-radius: var(--radius-full);
+  margin-top: var(--space-4);
+  box-shadow: var(--shadow-md);
+}
+.btn--dismiss:hover {
+  background: var(--color-brand-gold-dark);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+
+
+/* ============================================================
+   7. CLOCK DISPLAY (Current / Start / Finish)
+   ============================================================ */
+
+/* ── Column headers ── */
+.time-headers {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: var(--space-4);
+  margin-bottom: var(--space-1);
+}
+
+.time-header {
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-bold);
+  color: var(--text-primary);
+}
+
+.time-header--start {
+  color: var(--color-start);
+  text-align: center;
+}
+
+.time-header--finish {
+  color: var(--color-finish);
+  text-align: right;
+}
+
+/* ── Clock row ── */
+.clock-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: var(--space-4);
+  margin-bottom: var(--space-6);
+  align-items: baseline;
+}
+
+.clock-item__time {
+  font-size: var(--font-size-3xl);
+  font-weight: var(--font-weight-normal);
+  color: var(--text-primary);
+  letter-spacing: -.01em;
+  line-height: 1.1;
+}
+
+/* Start time is displayed in green */
+.clock-item__time--start {
+  color: var(--color-start);
+  text-align: center;
+  display: block;
+}
+
+/* Finish time is displayed in crimson red */
+.clock-item__time--finish {
+  color: var(--color-finish);
+  text-align: right;
+  display: block;
+}
+
+/* Phase label (e.g. "Reading Time:" or "Exam Time Remaining:") */
+.phase-label {
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-bold);
+  color: var(--text-primary);
+  margin-bottom: var(--space-4);
+}
+
+/* Countdown label ("Exam Time:") */
+.countdown-label {
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-bold);
+  color: var(--text-primary);
+  margin-bottom: var(--space-4);
+}
+
+
+/* ============================================================
+   8. COUNTDOWN DISPLAY (Big digit cards)
+   ============================================================
+   Large h/min/s blocks that visually dominate the timer UI.
+   Mirrors the screenshot layout closely.
+============================================================ */
+.countdown-display {
+  display: flex;
+  gap: var(--space-4);
+  align-items: stretch;
+  justify-content: center;
+  margin-bottom: var(--space-6);
+  flex-wrap: wrap;
+}
+
+/* Individual digit card */
+.digit-card {
+  background: var(--digit-card-bg);
+  border: var(--border-width) solid var(--digit-card-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--digit-card-shadow);
+  padding: var(--space-6) var(--space-8);
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-3);
+  min-width: 150px;
+  justify-content: center;
+  transition: box-shadow var(--transition-base), transform var(--transition-base);
+}
+
+/* Highlight effect when timer is running */
+.digit-card--active {
+  border-color: var(--color-brand-navy);
+  box-shadow: 0 0 0 2px rgba(127,20,22,.15), var(--shadow-md);
+}
+
+/* Warning pulse when under 5 minutes */
+.digit-card--warning {
+  border-color: #f59e0b;
+  animation: warningPulse 1s ease-in-out infinite alternate;
+}
+
+/* Critical flash when under 1 minute */
+.digit-card--critical {
+  border-color: var(--color-finish);
+  animation: criticalFlash 0.5s ease-in-out infinite alternate;
+}
+
+/* The large number inside the card */
+.digit-card__number {
+  font-size: var(--font-size-5xl);
+  font-weight: var(--font-weight-black);
+  color: var(--digit-number-color);
+  line-height: 1;
+  letter-spacing: -.03em;
+  font-variant-numeric: tabular-nums; /* Prevent layout shift as numbers change */
+  min-width: 2ch;
+  text-align: right;
+}
+
+/* The unit label (h / min / s) */
+.digit-card__unit {
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-medium);
+  color: var(--text-secondary);
+  line-height: 1;
+}
+
+/* Fade-in animation when seconds card appears */
+#card-seconds {
+  transition: opacity var(--transition-slow);
+}
+#card-seconds.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+
+/* ============================================================
+   9. INSTRUCTIONS BLOCK
+   ============================================================
+   Optional editable instructions panel shown below the timer.
+============================================================ */
+.instructions-block {
+  background: var(--color-gray-50);
+  border: var(--border-width) solid var(--border-ui);
+  border-radius: var(--radius-lg);
+  padding: var(--space-5);
+  margin-top: var(--space-6);
+}
+
+.instructions-block__heading {
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-semi);
+  color: var(--color-brand-navy);
+  margin-bottom: var(--space-3);
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+/* Editable content area */
+.instructions-block__content {
+  min-height: 120px;
+  font-size: var(--font-size-base);
+  color: var(--text-primary);
+  line-height: 1.7;
+  outline: none;
+  border: var(--border-width) dashed var(--color-gray-300);
+  border-radius: var(--radius-md);
+  padding: var(--space-3);
+  transition: border-color var(--transition-fast);
+}
+
+.instructions-block__content:focus {
+  border-color: var(--color-brand-navy);
+  background: var(--color-white);
+}
+
+/* Placeholder styling via CSS (since contenteditable doesn't support HTML placeholder) */
+.instructions-block__content:empty::before {
+  content: attr(placeholder);
+  color: var(--text-muted);
+  pointer-events: none;
+}
+
+
+/* ============================================================
+   10. SETUP MODAL
+   ============================================================ */
+
+/* Semi-transparent backdrop */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.65);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: var(--space-4);
+  animation: fadeIn var(--transition-base);
+}
+
+/* Modal card */
+.modal {
+  background: var(--bg-modal);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-xl);
+  width: 100%;
+  max-width: 560px;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  animation: slideUp var(--transition-slow);
+  border-top: 4px solid var(--color-brand-navy);
+}
+
+/* Modal header */
+.modal__header {
+  padding: var(--space-5) var(--space-6);
+  border-bottom: var(--border-width) solid var(--border-ui);
+}
+
+.modal__heading {
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-brand-navy);
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.modal__heading i {
+  color: var(--color-brand-gold);
+}
+
+/* Modal body: scrollable */
+.modal__body {
+  padding: var(--space-5) var(--space-6);
+  overflow-y: auto;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+/* Modal footer */
+.modal__footer {
+  padding: var(--space-4) var(--space-6);
+  border-top: var(--border-width) solid var(--border-ui);
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-3);
+}
+
+/* ── Form elements ── */
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+/* Toggle groups use row layout */
+.form-group--toggle {
+  flex-direction: row;
+  align-items: flex-start;
+  gap: var(--space-3);
+}
+
+.form-label {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semi);
+  color: var(--text-primary);
+}
+
+.form-label__optional {
+  font-weight: var(--font-weight-normal);
+  color: var(--text-muted);
+}
+
+/* Text input */
+.form-input {
+  border: var(--border-width) solid var(--border-ui);
+  border-radius: var(--radius-md);
+  padding: var(--space-2) var(--space-3);
+  font-size: var(--font-size-sm);
+  color: var(--text-primary);
+  background: var(--bg-card);
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+  width: 100%;
+}
+
+.form-input:focus {
+  border-color: var(--color-brand-navy);
+  box-shadow: 0 0 0 3px rgba(127,20,22,.15);
+  outline: none;
+}
+
+/* Small numeric inputs */
+.form-input--small {
+  width: 80px;
+}
+
+/* Time input */
+.form-input--time {
+  width: 120px;
+}
+
+/* Hint text below an input */
+.form-hint {
+  font-size: var(--font-size-xs);
+  color: var(--text-muted);
+}
+
+/* Inline label group (input + unit label side by side) */
+.input-group {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.input-group__label {
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+  font-weight: var(--font-weight-medium);
+}
+
+/* Auto-start time picker (shown when toggle is on) */
+.autostart-picker {
+  margin-top: var(--space-3);
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+/* ── Toggle Switch ── */
+.toggle-switch {
+  position: relative;
+  display: inline-flex;
+  flex-shrink: 0;
+  cursor: pointer;
+  margin-top: 2px; /* Align with label text */
+}
+
+.toggle-switch__input {
+  /* Visually hidden but accessible */
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+/* Toggle track */
+.toggle-switch__track {
+  display: block;
+  width: 44px;
+  height: 24px;
+  background: var(--color-gray-300);
+  border-radius: var(--radius-full);
+  position: relative;
+  transition: background var(--transition-base);
+}
+
+/* Toggle knob */
+.toggle-switch__track::after {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--color-white);
+  box-shadow: var(--shadow-sm);
+  transition: transform var(--transition-base);
+}
+
+/* Checked state */
+.toggle-switch__input:checked + .toggle-switch__track {
+  background: var(--color-brand-navy);
+}
+
+.toggle-switch__input:checked + .toggle-switch__track::after {
+  transform: translateX(20px);
+}
+
+.toggle-switch__input:focus-visible + .toggle-switch__track {
+  outline: 3px solid var(--color-brand-gold);
+  outline-offset: 2px;
+}
+
+/* Toggle label text */
+.toggle-label {
+  font-size: var(--font-size-sm);
+  color: var(--text-primary);
+  line-height: 1.5;
+}
+
+.toggle-label__hint {
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+.toggle-label__description {
+  font-size: var(--font-size-xs);
+  color: var(--text-muted);
+  margin-top: var(--space-1);
+}
+
+/* ── Warning/Disclaimer Box ── */
+.alert {
+  border-radius: var(--radius-md);
+  padding: var(--space-4);
+  font-size: var(--font-size-sm);
+  line-height: 1.6;
+  display: flex;
+  gap: var(--space-3);
+  align-items: flex-start;
+}
+
+.alert--warning {
+  background: var(--color-warning-bg);
+  border: var(--border-width) solid var(--color-warning-border);
+  color: var(--color-warning);
+}
+
+.alert--warning i {
+  font-size: var(--font-size-md);
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+
+/* ============================================================
+   11. TIME-EXPIRED OVERLAY
+   ============================================================
+   Full-screen dramatic overlay displayed when the timer hits 0.
+============================================================ */
+.expired-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(127, 20, 22, 0.92);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+  padding: var(--space-4);
+  animation: fadeIn var(--transition-slow);
+}
+
+/* Center card inside the overlay */
+.expired-overlay__card {
+  background: var(--color-white);
+  border-radius: var(--radius-2xl);
+  padding: var(--space-12) var(--space-16);
+  text-align: center;
+  max-width: 500px;
+  width: 100%;
+  box-shadow: var(--shadow-xl);
+  animation: bounceIn var(--transition-slow);
+  border-top: 6px solid var(--color-brand-gold);
+}
+
+/* Bell icon */
+.expired-overlay__icon {
+  font-size: 5rem;
+  color: var(--color-brand-gold);
+  margin-bottom: var(--space-4);
+  animation: ringBell 1s ease-in-out 3;
+  display: inline-block;
+}
+
+/* "Time's Up!" heading */
+.expired-overlay__heading {
+  font-size: var(--font-size-4xl);
+  font-weight: var(--font-weight-black);
+  color: var(--color-brand-navy);
+  margin-bottom: var(--space-4);
+  letter-spacing: -.03em;
+}
+
+/* Main message */
+.expired-overlay__message {
+  font-size: var(--font-size-lg);
+  color: var(--text-secondary);
+  line-height: 1.7;
+  margin-bottom: var(--space-2);
+}
+
+/* Exam name */
+.expired-overlay__exam-name {
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-semi);
+  color: var(--color-brand-navy);
+  margin-bottom: var(--space-2);
+}
+
+
+/* ============================================================
+   12. SITE FOOTER
+   ============================================================ */
+.site-footer {
+  background: var(--color-brand-navy);
+  color: rgba(255,255,255,0.7);
+  padding: var(--space-5) var(--space-6);
+  text-align: center;
+  border-top: 3px solid var(--color-brand-gold);
+}
+
+.site-footer__inner {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.site-footer__copy {
+  font-size: var(--font-size-xs);
+  margin-bottom: var(--space-1);
+}
+
+.site-footer__address {
+  font-size: var(--font-size-xs);
+  color: rgba(255,255,255,0.5);
+}
+
+
+/* ============================================================
+   13. DARK THEME OVERRIDES
+   ============================================================
+   Applied when <body> has class "theme-dark".
+   Overrides the light-mode token values set in :root.
+============================================================ */
+.theme-dark {
+  --bg-page:        #0f172a;
+  --bg-card:        #1e293b;
+  --bg-modal:       #1e293b;
+  --text-primary:   #f1f5f9;
+  --text-secondary: #94a3b8;
+  --text-muted:     #64748b;
+  --border-ui:      #334155;
+
+  --digit-card-bg:     #293548;
+  --digit-card-border: #3d526b;
+  --digit-card-shadow: 0 4px 16px rgba(0,0,0,.4);
+  --digit-number-color: #f1f5f9;
+
+  --header-bg:      #2d0607;   /* very dark maroon for dark theme header */
+  --header-text:    #f1f5f9;
+  --header-sub:     rgba(255,255,255,0.55);
+
+  --color-warning-bg: rgba(133, 100, 4, 0.2);
+  --color-warning-border: #92660a;
+  --color-warning: #fbbf24;
+}
+
+/* Dark mode: slightly lighter surface for form inputs */
+.theme-dark .form-input {
+  background: #293548;
+  color: #f1f5f9;
+  border-color: #3d526b;
+}
+
+.theme-dark .form-input:focus {
+  border-color: var(--color-brand-gold);
+  box-shadow: 0 0 0 3px rgba(245,166,35,.2);
+}
+
+/* Dark mode: expired overlay background stays readable */
+.theme-dark .expired-overlay__card {
+  background: #1e293b;
+}
+
+.theme-dark .expired-overlay__heading {
+  color: var(--color-brand-gold);
+}
+
+/* Dark mode: instructions block */
+.theme-dark .instructions-block {
+  background: #293548;
+  border-color: #3d526b;
+}
+
+.theme-dark .instructions-block__content {
+  border-color: #3d526b;
+}
+
+.theme-dark .instructions-block__content:focus {
+  background: #1e293b;
+}
+
+/* Theme toggle icon swap: sun in dark mode → moon */
+.theme-dark .btn--theme {
+  background: #293548;
+  color: var(--color-brand-gold);
+  border-color: #3d526b;
+}
+
+
+/* ============================================================
+   14. ANIMATIONS & KEYFRAMES
+   ============================================================ */
+
+/* General fade-in */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* Slide up for modal */
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to   { opacity: 1; transform: translateY(0);    }
+}
+
+/* Bounce-in for expired overlay card */
+@keyframes bounceIn {
+  0%   { opacity: 0; transform: scale(0.8); }
+  60%  { opacity: 1; transform: scale(1.05); }
+  80%  { transform: scale(0.97); }
+  100% { transform: scale(1); }
+}
+
+/* Bell ring animation on the expired overlay icon */
+@keyframes ringBell {
+  0%   { transform: rotate(0deg); }
+  10%  { transform: rotate(15deg); }
+  20%  { transform: rotate(-15deg); }
+  30%  { transform: rotate(12deg); }
+  40%  { transform: rotate(-12deg); }
+  50%  { transform: rotate(8deg); }
+  60%  { transform: rotate(-8deg); }
+  70%  { transform: rotate(4deg); }
+  80%  { transform: rotate(-4deg); }
+  100% { transform: rotate(0deg); }
+}
+
+/* Warning pulse for the digit cards under 5 minutes */
+@keyframes warningPulse {
+  from { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0); }
+  to   { box-shadow: 0 0 0 6px rgba(245, 158, 11, 0.3); }
+}
+
+/* Critical flash for the digit cards under 1 minute */
+@keyframes criticalFlash {
+  from { background: var(--digit-card-bg); }
+  to   { background: rgba(192, 57, 43, 0.08); }
+}
+
+/* Reading-time phase transition */
+@keyframes phaseIn {
+  from { opacity: 0; transform: translateX(-10px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+
+/* ============================================================
+   15. RESPONSIVE DESIGN (MEDIA QUERIES)
+   ============================================================ */
+
+/* ── Tablet and below (≤ 768px) ── */
+@media (max-width: 768px) {
+
+  /* Reduce header complexity on small screens */
+  .site-header__tagline {
+    display: none;
+  }
+
+  /* Tighten up the app padding */
+  .app-wrapper {
+    padding: var(--space-4) var(--space-3);
+  }
+
+  /* Reduce card padding */
+  .timer-card {
+    padding: var(--space-4) var(--space-4);
+  }
+
+  /* Clock row: stack vertically on mobile */
+  .time-headers,
+  .clock-row {
+    grid-template-columns: 1fr;
+    gap: var(--space-2);
+  }
+
+  .time-header--start,
+  .time-header--finish {
+    text-align: left;
+  }
+
+  .clock-item__time--start,
+  .clock-item__time--finish {
+    text-align: left;
+  }
+
+  /* Countdown: wrap and reduce card size */
+  .countdown-display {
+    gap: var(--space-3);
+  }
+
+  .digit-card {
+    min-width: 100px;
+    padding: var(--space-4) var(--space-5);
+  }
+
+  .digit-card__number {
+    font-size: var(--font-size-4xl);
+  }
+
+  /* Clock text smaller */
+  .clock-item__time {
+    font-size: var(--font-size-2xl);
+  }
+
+  /* Modal: full-width on mobile */
+  .modal {
+    max-width: 100%;
+    border-radius: var(--radius-lg);
+  }
+
+  /* Expired overlay card: reduce padding */
+  .expired-overlay__card {
+    padding: var(--space-8) var(--space-6);
+  }
+
+  .expired-overlay__heading {
+    font-size: var(--font-size-3xl);
+  }
+
+  /* Stack toolbar buttons */
+  .toolbar {
+    gap: var(--space-2);
+  }
+}
+
+/* ── Mobile (≤ 480px) ── */
+@media (max-width: 480px) {
+
+  .brand-text__university {
+    font-size: 0.7rem;
+  }
+
+  .timer-card__title {
+    font-size: var(--font-size-xl);
+  }
+
+  .digit-card {
+    min-width: 80px;
+    padding: var(--space-3) var(--space-4);
+  }
+
+  .digit-card__number {
+    font-size: var(--font-size-3xl);
+  }
+
+  .digit-card__unit {
+    font-size: var(--font-size-base);
+  }
+
+  .btn {
+    font-size: var(--font-size-xs);
+    padding: var(--space-2) var(--space-3);
+  }
+}
+
+/* ── Large screens (≥ 1200px) ── */
+@media (min-width: 1200px) {
+
+  .digit-card {
+    min-width: 200px;
+  }
+}

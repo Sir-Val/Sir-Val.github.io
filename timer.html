@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<!--
+  ============================================================
+  UPHSD Molino Campus - Exam Timer
+  College of Computer Studies
+  University of Perpetual Help System DALTA - Molino Campus
+  ============================================================
+  File        : index.html
+  Description : Main entry point for the Exam Timer application.
+                Provides the structure (markup) for the timer UI,
+                setup modal, and time-expired overlay.
+  Author      : CCS Department - UPHSD Molino
+  Version     : 1.0.0
+  ============================================================
+-->
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <!-- Ensures proper rendering and scaling on mobile devices -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Exam Timer for University of Perpetual Help System DALTA - Molino Campus" />
+  <title>Exam Timer &mdash; UPHSD Molino | College of Computer Studies</title>
+
+  <!-- Google Fonts: Inter for clean, modern typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+
+  <!-- Font Awesome for icons (theme toggle, clock, etc.) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+  <!-- Main stylesheet -->
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body class="theme-light" id="app-body">
+
+  <!-- ============================================================
+       SITE HEADER — University branding bar
+       Mirrors the UPHSD Molino campus header style (navy + gold)
+  ============================================================ -->
+  <header class="site-header" role="banner">
+    <div class="site-header__inner">
+
+      <!-- University logo / identity block -->
+      <div class="site-header__brand">
+        <!-- Initials badge as a visual stand-in for the university seal -->
+        <div class="brand-badge" aria-hidden="true">
+          <span class="brand-badge__text">UPHSD</span>
+        </div>
+        <div class="brand-text">
+          <span class="brand-text__university">University of Perpetual Help System DALTA</span>
+          <span class="brand-text__campus">Molino Campus &mdash; College of Computer Studies</span>
+        </div>
+      </div>
+
+      <!-- Navigation tagline -->
+      <div class="site-header__tagline" aria-label="University motto">
+        Character Building is Nation Building
+      </div>
+    </div>
+  </header>
+
+  <!-- ============================================================
+       MAIN APPLICATION WRAPPER
+  ============================================================ -->
+  <main class="app-wrapper" id="main-content" role="main">
+
+    <!-- ── App Card ─────────────────────────────────────────── -->
+    <section class="timer-card" aria-labelledby="timer-heading">
+
+      <!-- Page title -->
+      <h1 class="timer-card__title" id="timer-heading">
+        <i class="fa-solid fa-clock" aria-hidden="true"></i> Exam Timer
+      </h1>
+
+      <!-- ── Toolbar ─────────────────────────────────────────── -->
+      <div class="toolbar" role="toolbar" aria-label="Timer controls">
+
+        <!-- Start button: initiates the countdown -->
+        <button
+          class="btn btn--start"
+          id="btn-start"
+          aria-label="Start Exam Time"
+          title="Start the exam countdown"
+        >
+          <i class="fa-solid fa-play" aria-hidden="true"></i>
+          Start Exam Time
+        </button>
+
+        <!-- Pause / Resume button: toggles pause state -->
+        <button
+          class="btn btn--pause"
+          id="btn-pause"
+          aria-label="Pause timer"
+          title="Pause or resume the timer"
+          disabled
+        >
+          <i class="fa-solid fa-pause" aria-hidden="true"></i>
+          Pause
+        </button>
+
+        <!-- Setup button: opens configuration modal -->
+        <button
+          class="btn btn--setup"
+          id="btn-setup"
+          aria-label="Open setup"
+          aria-haspopup="dialog"
+          title="Configure exam settings"
+        >
+          <i class="fa-solid fa-gear" aria-hidden="true"></i>
+          Setup
+        </button>
+
+        <!-- Reset button: resets the timer to configured duration -->
+        <button
+          class="btn btn--reset"
+          id="btn-reset"
+          aria-label="Reset timer"
+          title="Reset the timer to the configured duration"
+        >
+          <i class="fa-solid fa-rotate-left" aria-hidden="true"></i>
+          Reset
+        </button>
+
+        <!-- Theme toggle: light / dark mode -->
+        <button
+          class="btn btn--theme"
+          id="btn-theme"
+          aria-label="Toggle dark mode"
+          title="Switch between light and dark theme"
+        >
+          <!-- Icon changes via JS between sun (☀) and moon (🌙) -->
+          <i class="fa-solid fa-sun" id="theme-icon" aria-hidden="true"></i>
+        </button>
+
+      </div><!-- /.toolbar -->
+
+      <hr class="divider" role="separator" />
+
+      <!-- ── Exam title (shown when set in Setup) ──────────── -->
+      <h2 class="exam-title" id="exam-title" aria-live="polite">
+        <!-- Populated by JavaScript when a title is configured -->
+      </h2>
+
+      <!-- ── Time headers row (Current / Start / Finish) ────── -->
+      <div class="time-headers" role="group" aria-label="Clock times">
+        <span class="time-header time-header--current">Current</span>
+        <span class="time-header time-header--start">Start</span>
+        <span class="time-header time-header--finish">Finish</span>
+      </div>
+
+      <!-- ── Clock display row ──────────────────────────────── -->
+      <div class="clock-row" aria-live="polite" aria-atomic="true">
+
+        <!-- Current wall-clock time (updates every second) -->
+        <div class="clock-item clock-item--current">
+          <time class="clock-item__time" id="current-time" datetime="">
+            <!-- e.g. "8:12 am" -->
+          </time>
+        </div>
+
+        <!-- Start time: set when the timer is first started -->
+        <div class="clock-item clock-item--start">
+          <time class="clock-item__time clock-item__time--start" id="start-time" datetime="">
+            &mdash;
+          </time>
+        </div>
+
+        <!-- Finish time: calculated as start + exam duration -->
+        <div class="clock-item clock-item--finish">
+          <time class="clock-item__time clock-item__time--finish" id="finish-time" datetime="">
+            &mdash;
+          </time>
+        </div>
+
+      </div><!-- /.clock-row -->
+
+      <!-- ── Reading time phase label (optional) ────────────── -->
+      <div class="phase-label" id="phase-label" aria-live="polite" hidden>
+        <!-- Shows "Reading Time:" or "Exam Time Remaining:" -->
+      </div>
+
+      <!-- ── Countdown status label ─────────────────────────── -->
+      <p class="countdown-label" id="countdown-label">Exam Time:</p>
+
+      <!-- ── Big countdown display ──────────────────────────── -->
+      <!--
+        The countdown is displayed in large digit "cards".
+        Each card is a visually prominent box containing:
+          - A large number
+          - A small unit label (h / min / s)
+        Cards are shown/hidden based on the remaining time and settings.
+      -->
+      <div class="countdown-display" role="timer" aria-live="off" aria-label="Time remaining">
+
+        <!-- Hours card -->
+        <div class="digit-card" id="card-hours" aria-label="Hours remaining">
+          <span class="digit-card__number" id="digit-hours">1</span>
+          <span class="digit-card__unit">h</span>
+        </div>
+
+        <!-- Minutes card -->
+        <div class="digit-card" id="card-minutes" aria-label="Minutes remaining">
+          <span class="digit-card__number" id="digit-minutes">00</span>
+          <span class="digit-card__unit">min</span>
+        </div>
+
+        <!-- Seconds card (hidden after a short delay unless always-show-seconds is on) -->
+        <div class="digit-card" id="card-seconds" aria-label="Seconds remaining">
+          <span class="digit-card__number" id="digit-seconds">00</span>
+          <span class="digit-card__unit">s</span>
+        </div>
+
+      </div><!-- /.countdown-display -->
+
+      <!-- ── Exam instructions block (optional, toggled in Setup) ── -->
+      <div class="instructions-block" id="instructions-block" hidden>
+        <h3 class="instructions-block__heading">
+          <i class="fa-solid fa-file-lines" aria-hidden="true"></i>
+          Exam Instructions
+        </h3>
+        <div
+          class="instructions-block__content"
+          id="instructions-content"
+          contenteditable="true"
+          aria-label="Exam instructions, editable"
+          placeholder="Click here to type exam instructions..."
+        ></div>
+      </div>
+
+    </section><!-- /.timer-card -->
+
+  </main><!-- /.app-wrapper -->
+
+  <!-- ============================================================
+       SITE FOOTER
+  ============================================================ -->
+  <footer class="site-footer" role="contentinfo">
+    <div class="site-footer__inner">
+      <p class="site-footer__copy">
+        &copy; <span id="footer-year"></span>
+        University of Perpetual Help System DALTA &mdash; Molino Campus
+        &bull; College of Computer Studies
+      </p>
+      <p class="site-footer__address">
+        Molino Road, Molino III, City of Bacoor, Cavite 4102
+      </p>
+    </div>
+  </footer>
+
+  <!-- ============================================================
+       SETUP MODAL
+       Allows the user to configure the exam title, duration,
+       reading time, and display preferences before starting.
+  ============================================================ -->
+  <div
+    class="modal-overlay"
+    id="modal-overlay"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="modal-heading"
+    hidden
+  >
+    <div class="modal">
+
+      <!-- Modal header -->
+      <div class="modal__header">
+        <h2 class="modal__heading" id="modal-heading">
+          <i class="fa-solid fa-gear" aria-hidden="true"></i>
+          Setup
+        </h2>
+      </div>
+
+      <!-- Modal body: configuration form -->
+      <div class="modal__body">
+
+        <!-- Exam title (optional) -->
+        <div class="form-group">
+          <label class="form-label" for="input-exam-title">
+            Exam title <span class="form-label__optional">(optional)</span>:
+          </label>
+          <input
+            type="text"
+            class="form-input"
+            id="input-exam-title"
+            name="examTitle"
+            placeholder="e.g. Computer Programming Finals"
+            aria-describedby="exam-title-hint"
+            maxlength="100"
+          />
+          <span class="form-hint" id="exam-title-hint">
+            Displayed above the timer during the exam.
+          </span>
+        </div>
+
+        <!-- Length of exam: hours + minutes -->
+        <div class="form-group">
+          <label class="form-label" for="input-exam-hours">Length of exam:</label>
+          <div class="input-group">
+            <input
+              type="number"
+              class="form-input form-input--small"
+              id="input-exam-hours"
+              name="examHours"
+              value="1"
+              min="0"
+              max="9"
+              aria-label="Exam length hours"
+            />
+            <span class="input-group__label">h</span>
+            <input
+              type="number"
+              class="form-input form-input--small"
+              id="input-exam-minutes"
+              name="examMinutes"
+              value="0"
+              min="0"
+              max="59"
+              aria-label="Exam length minutes"
+            />
+            <span class="input-group__label">min</span>
+          </div>
+        </div>
+
+        <!-- Reading time (optional) -->
+        <div class="form-group">
+          <label class="form-label" for="input-reading-time">
+            Reading time <span class="form-label__optional">(optional)</span>:
+          </label>
+          <div class="input-group">
+            <input
+              type="number"
+              class="form-input form-input--small"
+              id="input-reading-time"
+              name="readingTime"
+              value="0"
+              min="0"
+              max="60"
+              aria-label="Reading time in minutes"
+            />
+            <span class="input-group__label">min</span>
+          </div>
+        </div>
+
+        <!-- Toggle: include exam instructions -->
+        <div class="form-group form-group--toggle">
+          <label class="toggle-switch" for="toggle-instructions">
+            <input
+              type="checkbox"
+              class="toggle-switch__input"
+              id="toggle-instructions"
+              name="showInstructions"
+            />
+            <span class="toggle-switch__track" aria-hidden="true"></span>
+          </label>
+          <span class="toggle-label">
+            Include exam instructions
+            <span class="toggle-label__hint">(edit on the timer page)</span>
+          </span>
+        </div>
+
+        <!-- Toggle: always display seconds -->
+        <div class="form-group form-group--toggle">
+          <label class="toggle-switch" for="toggle-seconds">
+            <input
+              type="checkbox"
+              class="toggle-switch__input"
+              id="toggle-seconds"
+              name="alwaysSeconds"
+            />
+            <span class="toggle-switch__track" aria-hidden="true"></span>
+          </label>
+          <div class="toggle-label">
+            <span>Always display seconds</span>
+            <p class="toggle-label__description">
+              By default, the seconds display is hidden after a short period of time.
+              Turn this switch on to always display seconds.
+            </p>
+          </div>
+        </div>
+
+        <!-- Toggle: automatic start time -->
+        <div class="form-group form-group--toggle">
+          <label class="toggle-switch" for="toggle-autostart">
+            <input
+              type="checkbox"
+              class="toggle-switch__input"
+              id="toggle-autostart"
+              name="autoStart"
+            />
+            <span class="toggle-switch__track" aria-hidden="true"></span>
+          </label>
+          <div class="toggle-label">
+            <span>Set an automatic start time <span class="form-label__optional">(optional)</span></span>
+            <!-- Auto-start time picker: shown when toggle is enabled -->
+            <div class="autostart-picker" id="autostart-picker" hidden>
+              <label class="form-label" for="input-autostart-time">Start at:</label>
+              <input
+                type="time"
+                class="form-input form-input--time"
+                id="input-autostart-time"
+                name="autoStartTime"
+                aria-label="Automatic start time"
+              />
+            </div>
+          </div>
+        </div>
+
+        <!-- Disclaimer / warning note -->
+        <div class="alert alert--warning" role="alert">
+          <i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i>
+          <p>
+            Like any technology, things can go wrong. Do not solely rely on this exam timer;
+            ensure you have a backup/alternative. The University of Perpetual Help System
+            DALTA – Molino Campus takes no responsibility for the impact a problem with
+            the Exam Timer may have on an examination.
+          </p>
+        </div>
+
+      </div><!-- /.modal__body -->
+
+      <!-- Modal footer: action buttons -->
+      <div class="modal__footer">
+        <button class="btn btn--close-modal" id="btn-close-modal" aria-label="Close setup">
+          <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+          Close
+        </button>
+        <button class="btn btn--save-setup" id="btn-save-setup" aria-label="Save and close setup">
+          <i class="fa-solid fa-floppy-disk" aria-hidden="true"></i>
+          Save &amp; Close
+        </button>
+      </div>
+
+    </div><!-- /.modal -->
+  </div><!-- /.modal-overlay -->
+
+  <!-- ============================================================
+       TIME-EXPIRED OVERLAY
+       Shown as a full-screen alert when the countdown reaches zero.
+  ============================================================ -->
+  <div
+    class="expired-overlay"
+    id="expired-overlay"
+    role="alertdialog"
+    aria-modal="true"
+    aria-labelledby="expired-heading"
+    aria-describedby="expired-message"
+    hidden
+  >
+    <div class="expired-overlay__card">
+
+      <!-- Animated icon -->
+      <div class="expired-overlay__icon" aria-hidden="true">
+        <i class="fa-solid fa-bell"></i>
+      </div>
+
+      <h2 class="expired-overlay__heading" id="expired-heading">
+        Time's Up!
+      </h2>
+
+      <p class="expired-overlay__message" id="expired-message">
+        The examination period has ended.
+        <br />
+        Please put down your pens and stop writing.
+      </p>
+
+      <!-- Sub-message: exam title (filled dynamically) -->
+      <p class="expired-overlay__exam-name" id="expired-exam-name"></p>
+
+      <!-- Dismiss button -->
+      <button
+        class="btn btn--dismiss"
+        id="btn-dismiss-expired"
+        aria-label="Dismiss time-expired notification"
+      >
+        <i class="fa-solid fa-check" aria-hidden="true"></i>
+        Dismiss
+      </button>
+
+    </div>
+  </div><!-- /.expired-overlay -->
+
+  <!-- ============================================================
+       SCRIPTS
+       Loaded at the end of <body> so the DOM is ready when the
+       script executes — no need for DOMContentLoaded wrappers.
+  ============================================================ -->
+  <script src="js/timer.js"></script>
+
+</body>
+</html>

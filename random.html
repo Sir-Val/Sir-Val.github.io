@@ -1,0 +1,797 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Student Order Lottery</title>
+
+  <!-- Google Fonts: Bangers for display, Nunito for body -->
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Nunito:wght@400;700;900&display=swap" rel="stylesheet"/>
+
+  <style>
+    /* ─── CSS Variables ─────────────────────────────────────── */
+    :root {
+      --bg:       #0d0d1a;
+      --surface:  #15152b;
+      --border:   #2a2a4a;
+      --accent1:  #ff4d6d;
+      --accent2:  #ffd166;
+      --accent3:  #06d6a0;
+      --accent4:  #118ab2;
+      --accent5:  #c77dff;
+      --text:     #f0f0ff;
+      --muted:    #8888aa;
+      --radius:   14px;
+    }
+
+    /* ─── Reset & Base ──────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Nunito', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      /* Subtle star-field background via radial gradients */
+      background-image:
+        radial-gradient(circle at 15% 20%, #1a1a35 0%, transparent 50%),
+        radial-gradient(circle at 85% 80%, #1a1230 0%, transparent 50%);
+      overflow-x: hidden;
+    }
+
+    /* ─── Floating particle canvas (confetti) ───────────────── */
+    #confetti-canvas {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      pointer-events: none;
+      z-index: 999;
+    }
+
+    /* ─── Layout ────────────────────────────────────────────── */
+    .container {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem 4rem;
+    }
+
+    /* ─── Header ────────────────────────────────────────────── */
+    header {
+      text-align: center;
+      margin-bottom: 2.5rem;
+    }
+
+    header h1 {
+      font-family: 'Bangers', cursive;
+      font-size: clamp(2.8rem, 7vw, 5rem);
+      letter-spacing: 3px;
+      /* Gradient text */
+      background: linear-gradient(135deg, var(--accent2), var(--accent1), var(--accent5));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      line-height: 1;
+      filter: drop-shadow(0 0 18px rgba(255, 77, 109, 0.4));
+    }
+
+    header p {
+      color: var(--muted);
+      font-size: 1rem;
+      margin-top: 0.4rem;
+      letter-spacing: 1px;
+    }
+
+    /* ─── Setup Panel ───────────────────────────────────────── */
+    .setup-panel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .setup-panel label {
+      display: block;
+      font-weight: 900;
+      font-size: 0.85rem;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--accent3);
+      margin-bottom: 0.5rem;
+    }
+
+    /* Textarea for pasting / typing names */
+    .setup-panel textarea {
+      width: 100%;
+      min-height: 110px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      color: var(--text);
+      font-family: 'Nunito', sans-serif;
+      font-size: 1rem;
+      padding: 0.8rem 1rem;
+      resize: vertical;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .setup-panel textarea:focus {
+      border-color: var(--accent3);
+    }
+
+    .setup-panel .hint {
+      font-size: 0.78rem;
+      color: var(--muted);
+      margin-top: 0.4rem;
+      margin-bottom: 1.2rem;
+    }
+
+    /* ─── Buttons ───────────────────────────────────────────── */
+    .btn-row {
+      display: flex;
+      gap: 0.8rem;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      padding: 0.65rem 1.4rem;
+      border: none;
+      border-radius: 10px;
+      font-family: 'Nunito', sans-serif;
+      font-weight: 900;
+      font-size: 1rem;
+      cursor: pointer;
+      letter-spacing: 0.5px;
+      transition: transform 0.15s, filter 0.15s, opacity 0.2s;
+    }
+
+    .btn:hover:not(:disabled) { transform: translateY(-2px); filter: brightness(1.15); }
+    .btn:active:not(:disabled) { transform: scale(0.96); }
+    .btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent1), #ff8562);
+      color: #fff;
+      flex: 1;
+      min-width: 160px;
+      font-size: 1.05rem;
+    }
+
+    .btn-secondary {
+      background: var(--border);
+      color: var(--text);
+    }
+
+    /* ─── Name blocks grid (input preview) ──────────────────── */
+    #names-preview {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+      margin-top: 1rem;
+      min-height: 40px;
+    }
+
+    /* ─── Stage (animation arena) ───────────────────────────── */
+    #stage {
+      position: relative;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--surface);
+      min-height: 220px;
+      padding: 1.5rem;
+      overflow: hidden;
+      margin-bottom: 2rem;
+      display: none; /* hidden until lottery starts */
+    }
+
+    /* Glow lines decoration */
+    #stage::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(90deg, transparent 49.5%, rgba(255,255,255,0.03) 50%, transparent 50.5%),
+        linear-gradient(0deg, transparent 49.5%, rgba(255,255,255,0.03) 50%, transparent 50.5%);
+      pointer-events: none;
+    }
+
+    #stage-title {
+      font-family: 'Bangers', cursive;
+      letter-spacing: 2px;
+      font-size: 1.4rem;
+      color: var(--accent2);
+      margin-bottom: 1rem;
+      text-align: center;
+    }
+
+    /* Blocks container inside stage */
+    #blocks-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.7rem;
+      justify-content: center;
+      position: relative;
+    }
+
+    /* ─── Individual Name Block ─────────────────────────────── */
+    .name-block {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.55rem 1rem;
+      border-radius: 10px;
+      font-weight: 900;
+      font-size: 0.95rem;
+      cursor: default;
+      position: relative;
+      transition: transform 0.15s;
+      /* The color is assigned dynamically via JS */
+      min-width: 90px;
+      text-align: center;
+      border: 2px solid rgba(255,255,255,0.15);
+      /* Subtle inner shine */
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.25), 0 4px 14px rgba(0,0,0,0.3);
+      user-select: none;
+    }
+
+    /* Rank badge shown after reveal */
+    .name-block .rank {
+      position: absolute;
+      top: -9px;
+      left: -9px;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: var(--accent2);
+      color: #000;
+      font-size: 0.65rem;
+      font-weight: 900;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transform: scale(0);
+      transition: opacity 0.3s, transform 0.3s;
+      border: 2px solid var(--bg);
+    }
+
+    .name-block.revealed .rank {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    /* Shake animation applied during lottery draw */
+    @keyframes shake {
+      0%,100%  { transform: translate(0, 0) rotate(0deg); }
+      10%      { transform: translate(-4px, -3px) rotate(-2deg); }
+      20%      { transform: translate(5px, 2px) rotate(2deg); }
+      30%      { transform: translate(-3px, 4px) rotate(-1deg); }
+      40%      { transform: translate(4px, -2px) rotate(1.5deg); }
+      50%      { transform: translate(-5px, 3px) rotate(-2.5deg); }
+      60%      { transform: translate(3px, -4px) rotate(2deg); }
+      70%      { transform: translate(-2px, 5px) rotate(-1deg); }
+      80%      { transform: translate(5px, 1px) rotate(1deg); }
+      90%      { transform: translate(-3px, -3px) rotate(-1.5deg); }
+    }
+
+    .name-block.shaking {
+      animation: shake 0.5s infinite;
+    }
+
+    /* Pop-in animation for revealed blocks */
+    @keyframes pop-in {
+      0%   { transform: scale(0.5) rotate(-8deg); opacity: 0; }
+      70%  { transform: scale(1.1) rotate(2deg); opacity: 1; }
+      100% { transform: scale(1) rotate(0deg); opacity: 1; }
+    }
+
+    .name-block.pop {
+      animation: pop-in 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    }
+
+    /* Spotlight highlight on the "selected" block */
+    @keyframes spotlight {
+      0%,100% { box-shadow: inset 0 1px 0 rgba(255,255,255,0.25), 0 0 0 0 rgba(255,213,102,0); }
+      50%     { box-shadow: inset 0 1px 0 rgba(255,255,255,0.25), 0 0 30px 8px rgba(255,213,102,0.5); }
+    }
+
+    .name-block.spotlit {
+      animation: spotlight 0.6s ease-in-out 3;
+    }
+
+    /* ─── Results Section ───────────────────────────────────── */
+    #results {
+      display: none;
+    }
+
+    #results h2 {
+      font-family: 'Bangers', cursive;
+      font-size: 2.2rem;
+      letter-spacing: 2px;
+      text-align: center;
+      background: linear-gradient(135deg, var(--accent3), var(--accent4));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 1.2rem;
+    }
+
+    /* Ordered result list */
+    #result-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+    }
+
+    #result-list li {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 0.7rem 1.2rem;
+      font-weight: 700;
+      opacity: 0;
+      transform: translateX(-24px);
+      transition: opacity 0.4s, transform 0.4s;
+    }
+
+    /* Animate each list item in sequentially via JS */
+    #result-list li.visible {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    /* The number pill */
+    #result-list li .num {
+      min-width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Bangers', cursive;
+      font-size: 1.1rem;
+      letter-spacing: 1px;
+      color: #000;
+      flex-shrink: 0;
+    }
+
+    /* 1st place gets special styling */
+    #result-list li:first-child {
+      border-color: var(--accent2);
+      background: linear-gradient(135deg, rgba(255,209,102,0.12), var(--surface));
+    }
+
+    #result-list li:first-child .num {
+      background: var(--accent2);
+    }
+
+    /* ─── Status text ───────────────────────────────────────── */
+    #status {
+      text-align: center;
+      font-weight: 700;
+      color: var(--accent2);
+      font-size: 1.1rem;
+      letter-spacing: 0.5px;
+      min-height: 1.5rem;
+      margin-bottom: 0.8rem;
+    }
+
+    /* ─── Preview name tags (before lottery) ────────────────── */
+    .preview-tag {
+      padding: 0.3rem 0.75rem;
+      border-radius: 8px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: #fff;
+      opacity: 0.85;
+    }
+
+    /* ─── Responsive ────────────────────────────────────────── */
+    @media (max-width: 520px) {
+      .name-block { font-size: 0.82rem; padding: 0.45rem 0.75rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Confetti canvas overlay -->
+<canvas id="confetti-canvas"></canvas>
+
+<div class="container">
+
+  <!-- ══ Header ══════════════════════════════════════════════ -->
+  <header>
+    <h1>RANDOM STUDENT PICKER</h1>
+    <p>Randomize student order in style</p>
+  </header>
+
+  <!-- ══ Setup Panel ════════════════════════════════════════ -->
+  <div class="setup-panel">
+    <label for="names-input">Enter Student Names</label>
+    <textarea id="names-input"
+      placeholder="Type or paste names here&#10;One name per line, or separated by commas&#10;&#10;e.g.&#10;Alice&#10;Bob&#10;Charlie"></textarea>
+    <p class="hint">💡 One name per line, or comma-separated. Minimum 2 names required.</p>
+
+    <!-- Live preview of parsed name blocks -->
+    <div id="names-preview"></div>
+
+    <div class="btn-row" style="margin-top:1.2rem;">
+      <button class="btn btn-primary" id="start-btn" disabled>
+        🎰 Start Random Pick!
+      </button>
+      <button class="btn btn-secondary" id="reset-btn">
+        🔄 Reset
+      </button>
+    </div>
+  </div>
+
+  <!-- ══ Animation Stage ════════════════════════════════════ -->
+  <div id="stage">
+    <div id="stage-title">✨ Drawing Order… ✨</div>
+    <div id="status"></div>
+    <div id="blocks-container"></div>
+  </div>
+
+  <!-- ══ Final Results ══════════════════════════════════════ -->
+  <div id="results">
+    <h2>🏆 PRESENTATION ORDER</h2>
+    <ol id="result-list"></ol>
+    <div class="btn-row" style="margin-top:1.5rem; justify-content:center;">
+      <button class="btn btn-secondary" id="replay-btn">🔁 Draw Again</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  /* ═══════════════════════════════════════════════════════════
+   * CONSTANTS & STATE
+   * ═══════════════════════════════════════════════════════════ */
+
+  // Palette of block colors – cycles through these for variety
+  const COLORS = [
+    { bg: '#ff4d6d', text: '#fff' },
+    { bg: '#ffd166', text: '#1a1a1a' },
+    { bg: '#06d6a0', text: '#0a2a22' },
+    { bg: '#118ab2', text: '#fff' },
+    { bg: '#c77dff', text: '#1a0030' },
+    { bg: '#ff9f1c', text: '#1a0d00' },
+    { bg: '#4cc9f0', text: '#001a2a' },
+    { bg: '#f72585', text: '#fff' },
+    { bg: '#7bed9f', text: '#0a2a15' },
+    { bg: '#ff6b6b', text: '#fff' },
+  ];
+
+  let names = [];          // Parsed list of student names
+  let shuffled = [];       // Final shuffled order
+  let isRunning = false;   // Guard to prevent double-clicks
+
+  /* ═══════════════════════════════════════════════════════════
+   * DOM REFERENCES
+   * ═══════════════════════════════════════════════════════════ */
+  const textarea      = document.getElementById('names-input');
+  const preview       = document.getElementById('names-preview');
+  const startBtn      = document.getElementById('start-btn');
+  const resetBtn      = document.getElementById('reset-btn');
+  const replayBtn     = document.getElementById('replay-btn');
+  const stage         = document.getElementById('stage');
+  const blocksContainer = document.getElementById('blocks-container');
+  const statusEl      = document.getElementById('status');
+  const resultsEl     = document.getElementById('results');
+  const resultList    = document.getElementById('result-list');
+  const confettiCanvas = document.getElementById('confetti-canvas');
+  const ctx           = confettiCanvas.getContext('2d');
+
+  /* ═══════════════════════════════════════════════════════════
+   * UTILITY HELPERS
+   * ═══════════════════════════════════════════════════════════ */
+
+  /** Parse the textarea into a clean array of unique, non-empty names */
+  function parseNames(raw) {
+    return raw
+      .split(/[\n,]+/)          // split on newline or comma
+      .map(n => n.trim())
+      .filter(n => n.length > 0)
+      // Remove duplicates (case-insensitive)
+      .filter((n, i, arr) => arr.findIndex(x => x.toLowerCase() === n.toLowerCase()) === i);
+  }
+
+  /** Fisher-Yates shuffle – returns a NEW shuffled array */
+  function shuffle(arr) {
+    const a = [...arr];
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  }
+
+  /** Assign a color from the palette based on index */
+  function colorFor(index) {
+    return COLORS[index % COLORS.length];
+  }
+
+  /** Promise-based sleep */
+  const sleep = ms => new Promise(r => setTimeout(r, ms));
+
+  /* ═══════════════════════════════════════════════════════════
+   * NAME PREVIEW (live update as user types)
+   * ═══════════════════════════════════════════════════════════ */
+
+  function updatePreview() {
+    names = parseNames(textarea.value);
+    startBtn.disabled = names.length < 2;
+
+    // Render small colored preview tags
+    preview.innerHTML = '';
+    names.forEach((name, i) => {
+      const c = colorFor(i);
+      const tag = document.createElement('span');
+      tag.className = 'preview-tag';
+      tag.textContent = name;
+      tag.style.background = c.bg;
+      tag.style.color = c.text;
+      preview.appendChild(tag);
+    });
+  }
+
+  // Rerender preview whenever the user edits
+  textarea.addEventListener('input', updatePreview);
+
+  /* ═══════════════════════════════════════════════════════════
+   * BUILD NAME BLOCKS inside the stage
+   * ═══════════════════════════════════════════════════════════ */
+
+  function buildBlocks(nameList) {
+    blocksContainer.innerHTML = '';
+    nameList.forEach((name, i) => {
+      const c = colorFor(i);
+      const block = document.createElement('div');
+      block.className = 'name-block';
+      block.dataset.name = name;
+
+      // Rank badge (shows after reveal)
+      const rank = document.createElement('span');
+      rank.className = 'rank';
+      block.appendChild(rank);
+
+      // Name text
+      block.appendChild(document.createTextNode(name));
+
+      block.style.background = c.bg;
+      block.style.color = c.text;
+
+      blocksContainer.appendChild(block);
+    });
+  }
+
+  /* ═══════════════════════════════════════════════════════════
+   * LOTTERY ANIMATION SEQUENCE
+   * ═══════════════════════════════════════════════════════════ */
+
+  async function runLottery() {
+    if (isRunning) return;
+    isRunning = true;
+
+    // Hide results, show stage
+    resultsEl.style.display = 'none';
+    resultList.innerHTML = '';
+    stage.style.display = 'block';
+    statusEl.textContent = '';
+
+    // Compute the final shuffled order
+    shuffled = shuffle(names);
+
+    // Phase 1 — Build all blocks on stage and shake them
+    buildBlocks(names); // start with original order for dramatics
+
+    statusEl.textContent = '🔀 Shuffling names…';
+
+    // Add shake class to ALL blocks to simulate lottery tumbling
+    const allBlocks = blocksContainer.querySelectorAll('.name-block');
+    allBlocks.forEach(b => b.classList.add('shaking'));
+
+    await sleep(2200);
+
+    // Phase 2 — Stop shaking, fade out all blocks
+    allBlocks.forEach(b => {
+      b.classList.remove('shaking');
+      b.style.transition = 'opacity 0.4s, transform 0.4s';
+      b.style.opacity = '0';
+      b.style.transform = 'scale(0.8)';
+    });
+
+    await sleep(500);
+
+    // Phase 3 — Rebuild blocks in SHUFFLED order and pop them in one by one
+    blocksContainer.innerHTML = '';
+    statusEl.textContent = '🎯 Revealing order…';
+
+    for (let i = 0; i < shuffled.length; i++) {
+      const name = shuffled[i];
+      const c = colorFor(names.indexOf(name)); // keep same color per name
+
+      const block = document.createElement('div');
+      block.className = 'name-block pop';
+      block.dataset.name = name;
+
+      // Rank badge
+      const rank = document.createElement('span');
+      rank.className = 'rank';
+      rank.textContent = i + 1;  // display the sequential number
+      block.appendChild(rank);
+
+      block.appendChild(document.createTextNode(name));
+      block.style.background = c.bg;
+      block.style.color = c.text;
+
+      blocksContainer.appendChild(block);
+
+      // Spotlight the current block briefly
+      block.classList.add('spotlit');
+      statusEl.textContent = `#${i + 1} → ${name}`;
+
+      await sleep(550); // stagger delay between reveals
+
+      // Reveal rank badge
+      block.classList.add('revealed');
+
+      await sleep(100);
+    }
+
+    // Phase 4 — Show final results list with staggered slide-in
+    statusEl.textContent = '✅ Order decided!';
+    await sleep(700);
+
+    launchConfetti(); // 🎉 Celebrate!
+
+    resultsEl.style.display = 'block';
+    for (let i = 0; i < shuffled.length; i++) {
+      // Build result list item
+      const li = document.createElement('li');
+
+      const numPill = document.createElement('span');
+      numPill.className = 'num';
+      numPill.textContent = i + 1;
+      numPill.style.background = colorFor(names.indexOf(shuffled[i])).bg;
+      numPill.style.color = colorFor(names.indexOf(shuffled[i])).text;
+
+      li.appendChild(numPill);
+      li.appendChild(document.createTextNode(shuffled[i]));
+      resultList.appendChild(li);
+
+      // Stagger the slide-in animation
+      await sleep(120);
+      li.classList.add('visible');
+    }
+
+    isRunning = false;
+  }
+
+  /* ═══════════════════════════════════════════════════════════
+   * CONFETTI PARTICLE SYSTEM
+   * ═══════════════════════════════════════════════════════════ */
+
+  let particles = [];
+  let confettiRunning = false;
+
+  /** Resize the canvas to always fill the viewport */
+  function resizeCanvas() {
+    confettiCanvas.width  = window.innerWidth;
+    confettiCanvas.height = window.innerHeight;
+  }
+
+  window.addEventListener('resize', resizeCanvas);
+  resizeCanvas();
+
+  /** Create a burst of confetti particles */
+  function launchConfetti() {
+    confettiRunning = true;
+    const colors = ['#ff4d6d','#ffd166','#06d6a0','#118ab2','#c77dff','#ff9f1c','#4cc9f0'];
+
+    // Spawn 120 particles
+    for (let i = 0; i < 120; i++) {
+      particles.push({
+        x:     Math.random() * confettiCanvas.width,
+        y:     Math.random() * confettiCanvas.height * 0.4 - 20,
+        w:     Math.random() * 10 + 5,     // width of confetti piece
+        h:     Math.random() * 6 + 3,      // height
+        color: colors[Math.floor(Math.random() * colors.length)],
+        vx:    (Math.random() - 0.5) * 5,  // horizontal velocity
+        vy:    Math.random() * 4 + 2,       // downward velocity
+        angle: Math.random() * Math.PI * 2,
+        spin:  (Math.random() - 0.5) * 0.2,
+        alpha: 1,
+      });
+    }
+
+    if (!confettiRunning) animateConfetti();
+    animateConfetti();
+
+    // Auto-stop after 4 seconds
+    setTimeout(() => { confettiRunning = false; }, 4000);
+  }
+
+  /** Animate confetti frame-by-frame */
+  function animateConfetti() {
+    ctx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
+
+    particles = particles.filter(p => p.alpha > 0.05);
+
+    particles.forEach(p => {
+      ctx.save();
+      ctx.globalAlpha = p.alpha;
+      ctx.translate(p.x + p.w / 2, p.y + p.h / 2);
+      ctx.rotate(p.angle);
+      ctx.fillStyle = p.color;
+      ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
+      ctx.restore();
+
+      // Update physics
+      p.x     += p.vx;
+      p.y     += p.vy;
+      p.vy    += 0.12;    // gravity
+      p.angle += p.spin;
+      p.alpha -= 0.012;   // fade out
+    });
+
+    if (particles.length > 0) {
+      requestAnimationFrame(animateConfetti);
+    } else {
+      ctx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
+      confettiRunning = false;
+    }
+  }
+
+  /* ═══════════════════════════════════════════════════════════
+   * RESET EVERYTHING
+   * ═══════════════════════════════════════════════════════════ */
+
+  function resetAll() {
+    if (isRunning) return;
+    textarea.value = '';
+    names = [];
+    shuffled = [];
+    preview.innerHTML = '';
+    startBtn.disabled = true;
+    stage.style.display = 'none';
+    resultsEl.style.display = 'none';
+    resultList.innerHTML = '';
+    blocksContainer.innerHTML = '';
+    statusEl.textContent = '';
+    particles = [];
+    ctx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
+  }
+
+  /** Replay uses same names but redraws a new shuffle */
+  function replayLottery() {
+    if (isRunning) return;
+    resultsEl.style.display = 'none';
+    resultList.innerHTML = '';
+    runLottery();
+  }
+
+  /* ═══════════════════════════════════════════════════════════
+   * EVENT LISTENERS
+   * ═══════════════════════════════════════════════════════════ */
+
+  startBtn.addEventListener('click', () => {
+    names = parseNames(textarea.value); // re-parse to be safe
+    if (names.length >= 2) runLottery();
+  });
+
+  resetBtn.addEventListener('click', resetAll);
+  replayBtn.addEventListener('click', replayLottery);
+
+  /* ─── Pre-fill a demo so the page isn't blank on first load ─ */
+  textarea.value = `Alice\nBob\nCharlie\nDiana\nEthan\nFiona\nGeorge`;
+  updatePreview();
+</script>
+</body>
+</html>
