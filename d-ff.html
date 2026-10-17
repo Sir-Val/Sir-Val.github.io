@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>D Flip-Flop Simulator & Logic Puzzle</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #1e1e1e; color: #fff; display: flex; flex-direction: column; align-items: center; padding: 20px; }
+        .controls { margin-bottom: 20px; display: flex; gap: 15px; }
+        button { padding: 12px 24px; font-size: 16px; font-weight: bold; cursor: pointer; border: none; border-radius: 5px; transition: 0.2s; }
+        #btnD { background-color: #f1c40f; color: #000; }
+        #btnClk { background-color: #3498db; color: #fff; }
+        #btnRst { background-color: #e74c3c; color: #fff; }
+        button:active { transform: scale(0.95); }
+        
+        .circuit-container { display: flex; align-items: center; gap: 40px; margin-bottom: 20px; background: #2d2d2d; padding: 30px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
+        .dff-symbol { width: 120px; height: 160px; border: 4px solid #ecf0f1; position: relative; display: flex; justify-content: center; align-items: center; font-size: 24px; font-weight: bold; }
+        .pin { position: absolute; font-size: 18px; font-family: monospace; }
+        .pin-d { top: 20px; left: 10px; }
+        .pin-clk { bottom: 20px; left: 10px; }
+        .pin-clk::before { content: '>'; position: absolute; left: -14px; top: -2px; font-size: 20px; }
+        .pin-q { top: 20px; right: 10px; }
+        .pin-qbar { bottom: 20px; right: 10px; text-decoration: overline; }
+        
+        .outputs { display: flex; flex-direction: column; gap: 30px; }
+        .output-row { display: flex; align-items: center; gap: 15px; font-size: 20px; }
+        .led { width: 40px; height: 40px; border-radius: 50%; border: 3px solid #555; background-color: #333; transition: 0.1s; }
+        .led.on { background-color: #2ecc71; box-shadow: 0 0 20px #2ecc71; border-color: #2ecc71; }
+        .led.red.on { background-color: #e74c3c; box-shadow: 0 0 20px #e74c3c; border-color: #e74c3c; }
+        
+        canvas { background-color: #000; border: 2px solid #555; border-radius: 5px; margin-bottom: 10px; }
+        .legend { display: flex; gap: 20px; margin-bottom: 30px; font-family: monospace; font-size: 16px; }
+        .leg-clk { color: #3498db; }
+        .leg-d { color: #f1c40f; }
+        .leg-q { color: #2ecc71; }
+
+        .puzzle-box { background: #34495e; padding: 25px; border-radius: 10px; text-align: center; width: 100%; max-width: 750px; border: 2px solid #7f8c8d; }
+        .puzzle-box h3 { margin-top: 0; color: #ecf0f1; }
+        .sequence-display { font-size: 28px; letter-spacing: 8px; margin: 20px 0; font-family: monospace; color: #f1c40f; background: #2c3e50; padding: 10px; border-radius: 5px; }
+        .puzzle-status { font-size: 22px; font-weight: bold; color: #e74c3c; text-transform: uppercase; letter-spacing: 2px; }
+        .puzzle-status.unlocked { color: #2ecc71; }
+    </style>
+</head>
+<body>
+    <h2>Edge-Triggered D Flip-Flop Simulator</h2>
+    
+    <div class="controls">
+        <button id="btnD">Toggle Data (D): 0</button>
+        <button id="btnClk">Hold to Pulse Clock (CLK)</button>
+        <button id="btnRst">Asynchronous Reset</button>
+    </div>
+
+    <div class="circuit-container">
+        <div class="dff-symbol">
+            D-FF
+            <div class="pin pin-d">D</div>
+            <div class="pin pin-clk">CLK</div>
+            <div class="pin pin-q">Q</div>
+            <div class="pin pin-qbar">Q'</div>
+        </div>
+        <div class="outputs">
+            <div class="output-row">
+                <span>Output Q:</span>
+                <div class="led" id="ledQ"></div>
+            </div>
+            <div class="output-row">
+                <span>Output Q':</span>
+                <div class="led red on" id="ledQbar"></div>
+            </div>
+        </div>
+    </div>
+
+    <canvas id="waveform" width="800" height="250"></canvas>
+    <div class="legend">
+        <span class="leg-q">■ Q (Output)</span>
+        <span class="leg-d">■ D (Data)</span>
+        <span class="leg-clk">■ CLK (Clock)</span>
+    </div>
+
+    <div class="puzzle-box">
+        <h3>Classic Logic Puzzle: The Digital Lock</h3>
+        <p>Use the inputs above to clock the correct 4-bit sequence into the shift register memory to unlock the system.</p>
+        <p>Target Sequence: <strong>1 - 0 - 1 - 1</strong></p>
+        <div class="sequence-display">[<span id="seq">0,0,0,0</span>]</div>
+        <div class="puzzle-status" id="statusMsg">LOCKED</div>
+    </div>
+
+    <script>
+        let D = 0;
+        let CLK = 0;
+        let Q = 0;
+        
+        let shiftRegister = [0, 0, 0, 0];
+        const targetSequence = "1,0,1,1";
+        
+        const btnD = document.getElementById('btnD');
+        const btnClk = document.getElementById('btnClk');
+        const btnRst = document.getElementById('btnRst');
+        const ledQ = document.getElementById('ledQ');
+        const ledQbar = document.getElementById('ledQbar');
+        const seqDisplay = document.getElementById('seq');
+        const statusMsg = document.getElementById('statusMsg');
+        
+        btnD.addEventListener('click', () => { 
+            D = D === 0 ? 1 : 0; 
+            btnD.innerText = `Toggle Data (D): ${D}`; 
+        });
+        
+        btnClk.addEventListener('mousedown', () => { 
+            CLK = 1; 
+            Q = D; 
+            updateOutputs();
+            updatePuzzleMemory();
+        });
+        
+        btnClk.addEventListener('mouseup', () => { CLK = 0; });
+        btnClk.addEventListener('mouseleave', () => { CLK = 0; });
+        
+        btnRst.addEventListener('mousedown', () => { 
+            Q = 0; 
+            shiftRegister = [0, 0, 0, 0];
+            updateOutputs(); 
+            updatePuzzleDisplay();
+            statusMsg.innerText = "LOCKED";
+            statusMsg.className = "puzzle-status";
+        });
+        
+        function updateOutputs() {
+            if (Q === 1) {
+                ledQ.classList.add('on');
+                ledQbar.classList.remove('on');
+            } else {
+                ledQ.classList.remove('on');
+                ledQbar.classList.add('on');
+            }
+        }
+
+        function updatePuzzleMemory() {
+            shiftRegister.shift();
+            shiftRegister.push(Q);
+            updatePuzzleDisplay();
+            
+            if (shiftRegister.join(",") === targetSequence) {
+                statusMsg.innerText = "UNLOCKED! Sequence Accepted.";
+                statusMsg.className = "puzzle-status unlocked";
+            } else {
+                statusMsg.innerText = "LOCKED";
+                statusMsg.className = "puzzle-status";
+            }
+        }
+
+        function updatePuzzleDisplay() {
+            seqDisplay.innerText = shiftRegister.join(",");
+        }
+
+        const canvas = document.getElementById('waveform');
+        const ctx = canvas.getContext('2d');
+        const history = [];
+        const maxHistory = 800; 
+        
+        function drawWaveform() {
+            history.push({ c: CLK, d: D, q: Q });
+            if (history.length > maxHistory) history.shift();
+            
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            ctx.strokeStyle = '#222';
+            ctx.lineWidth = 1;
+            for(let i = 0; i < canvas.height; i += 50) {
+                ctx.beginPath(); ctx.moveTo(0, i); ctx.lineTo(canvas.width, i); ctx.stroke();
+            }
+
+            drawLine(history.map(h => h.q), 60, '#2ecc71'); 
+            drawLine(history.map(h => h.d), 140, '#f1c40f'); 
+            drawLine(history.map(h => h.c), 220, '#3498db'); 
+            
+            requestAnimationFrame(drawWaveform);
+        }
+        
+        function drawLine(data, baseY, color) {
+            ctx.strokeStyle = color;
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            for (let i = 0; i < data.length; i++) {
+                let x = i;
+                let y = baseY - (data[i] * 40); 
+                if (i === 0) ctx.moveTo(x, y);
+                else {
+                    let prevY = baseY - (data[i-1] * 40);
+                    if (y !== prevY) ctx.lineTo(x, prevY); 
+                    ctx.lineTo(x, y);
+                }
+            }
+            ctx.stroke();
+        }
+        
+        drawWaveform();
+    </script>
+</body>
+</html>

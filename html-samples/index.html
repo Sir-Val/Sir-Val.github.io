@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <title>Fireworks Celebration</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background: #000;
+            font-family: 'Arial', sans-serif;
+        }
+        
+        canvas {
+            display: block;
+        }
+        
+        /* Input form styling */
+        .input-container {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 100;
+            text-align: center;
+        }
+        
+        .input-container.hidden {
+            display: none;
+        }
+        
+        .input-box {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            max-width: 500px;
+            width: 90%;
+        }
+        
+        .input-box h1 {
+            color: #333;
+            margin: 0 0 20px 0;
+            font-size: 28px;
+        }
+        
+        .input-box p {
+            color: #666;
+            margin: 0 0 20px 0;
+            font-size: 16px;
+        }
+        
+        .input-container-row {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+        
+        .input-box input {
+            width: 300px;
+            padding: 12px 15px;
+            font-size: 16px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            transition: border-color 0.3s;
+        }
+        
+        .input-box input:focus {
+            outline: none;
+            border-color: #4CAF50;
+        }
+        
+        .input-box button {
+            padding: 12px 30px;
+            font-size: 16px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            font-weight: bold;
+        }
+        
+        .input-box button:hover {
+            background-color: #45a049;
+        }
+        
+        /* ===== MOBILE RESPONSIVE DESIGN ===== */
+        @media (max-width: 768px) {
+            /* Adjust input container for mobile */
+            .input-container {
+                top: 45%;
+            }
+            
+            .input-box {
+                padding: 25px;
+                width: 90%;
+                max-width: 100%;
+            }
+            
+            .input-box h1 {
+                font-size: 24px;
+                margin: 0 0 15px 0;
+            }
+            
+            .input-box p {
+                font-size: 14px;
+                margin: 0 0 15px 0;
+            }
+            
+            .input-container-row {
+                flex-direction: column;
+                gap: 12px;
+            }
+            
+            .input-box input {
+                width: 100%;
+                padding: 14px 12px;
+                font-size: 16px;
+                box-sizing: border-box;
+            }
+            
+            .input-box button {
+                width: 100%;
+                padding: 14px 20px;
+                font-size: 18px;
+                font-weight: bold;
+                touch-action: manipulation;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            /* Extra small devices */
+            .input-container {
+                top: 50%;
+            }
+            
+            .input-box {
+                padding: 20px 15px;
+            }
+            
+            .input-box h1 {
+                font-size: 20px;
+                margin: 0 0 12px 0;
+            }
+            
+            .input-box p {
+                font-size: 13px;
+                margin: 0 0 12px 0;
+            }
+            
+            .input-box input {
+                padding: 12px 10px;
+                font-size: 15px;
+            }
+            
+            .input-box button {
+                padding: 12px 15px;
+                font-size: 16px;
+            }
+            
+            /* Mobile congratulations message */
+            .message-box {
+                font-size: 28px;
+                letter-spacing: 1px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            /* Congratulations message for tablets and mobile */
+            .congratulations {
+                top: 45%;
+            }
+            
+            .message-box {
+                font-size: 32px;
+                margin-bottom: 10px;
+            }
+        }
+        
+        /* Congratulations message styling */
+        .congratulations {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 200;
+            text-align: center;
+            display: none;
+        }
+        
+        .congratulations.show {
+            display: block;
+        }
+        
+        .message-box {
+            font-size: 48px;
+            font-weight: bold;
+            color: #FFD700;
+            text-shadow: 0 0 20px rgba(255, 215, 0, 0.8),
+                         0 0 40px rgba(255, 100, 0, 0.6);
+            letter-spacing: 2px;
+            animation: pulse 0.8s ease-in-out infinite;
+            line-height: 1.4;
+            word-wrap: break-word;
+        }
+        
+        .user-name {
+            font-size: 56px;
+            color: #FF1493;
+            margin-top: 20px;
+            text-shadow: 0 0 20px rgba(255, 20, 147, 0.8);
+            animation: bounce 0.6s ease-in-out infinite;
+        }
+        
+        /* Pulse animation for congratulations text */
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+        
+        /* Bounce animation for name */
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Input form section -->
+    <div class="input-container" id="inputContainer">
+        <div class="input-box">
+            <h1>🎉 Welcome!</h1>
+            <p>Enter your name:</p>
+            <!-- Input field for user's name with ENTER button -->
+            <div class="input-container-row">
+                <input 
+                    type="text" 
+                    id="nameInput" 
+                    placeholder="Enter your name..." 
+                    autofocus
+                >
+                <button id="enterBtn">ENTER</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Congratulations message section -->
+    <div class="congratulations" id="congratulations">
+        <div class="message-box">CONGRATULATIONS, <span id="userName"></span></div>
+        <div class="message-box">YOU COMPLETED THE TASK!</div>
+    </div>
+    
+    <!-- Canvas for fireworks animation -->
+    <canvas id="canvas"></canvas>
+    
+    <script>
+        // ===== DOM ELEMENTS =====
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        const inputContainer = document.getElementById('inputContainer');
+        const nameInput = document.getElementById('nameInput');
+        const congratulationsDiv = document.getElementById('congratulations');
+        const userNameDisplay = document.getElementById('userName');
+        
+        // ===== CANVAS SETUP =====
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        
+        // Handle window resize
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+        
+        // ===== PARTICLE CLASS =====
+        // Represents individual particles that fly out from firework explosions
+        class Particle {
+            constructor(x, y, color) {
+                this.x = x;
+                this.y = y;
+                this.color = color;
+                // Random velocity in all directions for explosion effect
+                this.velocity = {
+                    x: (Math.random() - 0.5) * 8,
+                    y: (Math.random() - 0.5) * 8
+                };
+                this.alpha = 1; // Opacity for fade-out effect
+                this.decay = Math.random() * 0.015 + 0.01; // How fast particles fade
+                this.gravity = 0.05; // Gravity pulling particles downward
+                this.size = Math.random() * 3 + 1; // Random size between 1-4 pixels
+            }
+            
+            // Update particle position and properties each frame
+            update() {
+                this.velocity.y += this.gravity; // Apply gravity
+                this.x += this.velocity.x;
+                this.y += this.velocity.y;
+                this.alpha -= this.decay; // Fade out over time
+            }
+            
+            // Draw particle on canvas
+            draw() {
+                ctx.save();
+                ctx.globalAlpha = this.alpha;
+                ctx.fillStyle = this.color;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.restore();
+            }
+        }
+        
+        // ===== FIREWORK CLASS =====
+        // Represents a single firework that launches and explodes
+        class Firework {
+            constructor() {
+                this.x = Math.random() * canvas.width; // Random X position
+                this.y = canvas.height; // Start from bottom
+                // Target height for explosion (upper half of screen)
+                this.targetY = Math.random() * canvas.height * 0.5 + 50;
+                // Calculate velocity to reach target in ~60 frames
+                this.velocity = (this.y - this.targetY) / 60;
+                this.particles = []; // Particles created on explosion
+                this.exploded = false;
+                // Random color using HSL (Hue, Saturation, Lightness)
+                this.color = `hsl(${Math.random() * 360}, 100%, 60%)`;
+                this.trailParticles = []; // Trail particles while launching
+            }
+            
+            // Update firework state each frame
+            update() {
+                if (!this.exploded) {
+                    this.y -= this.velocity; // Move rocket upward
+                    
+                    // Add trail particles randomly for visual effect
+                    if (Math.random() < 0.3) {
+                        this.trailParticles.push({
+                            x: this.x,
+                            y: this.y,
+                            alpha: 0.5,
+                            size: 2
+                        });
+                    }
+                    
+                    // Check if reached target height - time to explode
+                    if (this.y <= this.targetY) {
+                        this.explode();
+                    }
+                } else {
+                    // Update all particles from explosion
+                    this.particles.forEach((p, i) => {
+                        p.update();
+                        // Remove particles that have completely faded
+                        if (p.alpha <= 0) {
+                            this.particles.splice(i, 1);
+                        }
+                    });
+                }
+                
+                // Update trail particles and remove faded ones
+                this.trailParticles.forEach((t, i) => {
+                    t.alpha -= 0.02;
+                    if (t.alpha <= 0) {
+                        this.trailParticles.splice(i, 1);
+                    }
+                });
+            }
+            
+            // Create explosion effect by generating many particles
+            explode() {
+                this.exploded = true;
+                // Random number of particles (100-150) for varied explosions
+                const particleCount = Math.random() * 50 + 100;
+                
+                for (let i = 0; i < particleCount; i++) {
+                    this.particles.push(new Particle(this.x, this.y, this.color));
+                }
+            }
+            
+            // Draw firework on canvas
+            draw() {
+                if (!this.exploded) {
+                    // Draw trail particles while launching
+                    this.trailParticles.forEach(t => {
+                        ctx.save();
+                        ctx.globalAlpha = t.alpha;
+                        ctx.fillStyle = this.color;
+                        ctx.beginPath();
+                        ctx.arc(t.x, t.y, t.size, 0, Math.PI * 2);
+                        ctx.fill();
+                        ctx.restore();
+                    });
+                    
+                    // Draw rocket body as a small circle
+                    ctx.fillStyle = this.color;
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, 3, 0, Math.PI * 2);
+                    ctx.fill();
+                } else {
+                    // Draw all explosion particles
+                    this.particles.forEach(p => p.draw());
+                }
+            }
+            
+            // Check if firework is completely finished
+            isDone() {
+                return this.exploded && this.particles.length === 0;
+            }
+        }
+        
+        // ===== ANIMATION STATE =====
+        const fireworks = []; // Array to store active fireworks
+        let lastFireworkTime = 0;
+        let isAnimating = false; // Flag to track if animation is running
+        
+        // ===== EVENT LISTENERS =====
+        // Get reference to ENTER button
+        const enterBtn = document.getElementById('enterBtn');
+        
+        // Handle Enter key press in input field
+        nameInput.addEventListener('keypress', (event) => {
+            if (event.key === 'Enter') {
+                const name = nameInput.value.trim();
+                if (name) {
+                    startCelebration(name);
+                }
+            }
+        });
+        
+        // Handle ENTER button click - works on both desktop and mobile
+        enterBtn.addEventListener('click', () => {
+            const name = nameInput.value.trim();
+            if (name) {
+                startCelebration(name);
+            }
+        });
+        
+        // Prevent double-tap zoom on button (mobile optimization)
+        enterBtn.addEventListener('touchend', (event) => {
+            event.preventDefault();
+            const name = nameInput.value.trim();
+            if (name) {
+                startCelebration(name);
+            }
+        }, false);
+        
+        // ===== MAIN ANIMATION FUNCTION =====
+        // This function is called repeatedly using requestAnimationFrame for smooth animation
+        function animate(currentTime) {
+            // Create fade effect by drawing semi-transparent black rectangle
+            // This creates a trailing/ghosting effect for fireworks
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            // Only launch new fireworks if animation is active
+            if (isAnimating) {
+                // Launch new firework at random intervals (500-1000ms)
+                if (currentTime - lastFireworkTime > Math.random() * 500 + 500) {
+                    fireworks.push(new Firework());
+                    lastFireworkTime = currentTime;
+                }
+            }
+            
+            // Update and draw all active fireworks
+            fireworks.forEach((fw, i) => {
+                fw.update();
+                fw.draw();
+                
+                // Remove fireworks that are completely done
+                if (fw.isDone()) {
+                    fireworks.splice(i, 1);
+                }
+            });
+            
+            // Continue animation loop
+            requestAnimationFrame(animate);
+        }
+        
+        // ===== START CELEBRATION FUNCTION =====
+        // Called when user enters their name and clicks ENTER button or presses Enter key
+        function startCelebration(name) {
+            // Hide input form
+            inputContainer.classList.add('hidden');
+            
+            // Display congratulations message with user's name in uppercase
+            userNameDisplay.textContent = name.toUpperCase();
+            congratulationsDiv.classList.add('show');
+            
+            // Start fireworks animation
+            isAnimating = true;
+        }
+        
+        // Start the main animation loop
+        animate(0);
+    </script>
+</body>
+</html>

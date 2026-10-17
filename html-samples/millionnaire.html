@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Assembly Language Millionaire</title>
+<style>
+    /* ============================================
+       DESIGN TOKENS
+       Navy + gold palette to mirror the real show's
+       stage lighting and money-ladder look.
+       ============================================ */
+    :root{
+        --navy-deepest:#000308;
+        --navy-deep:#020a1f;
+        --navy:#071642;
+        --navy-light:#123073;
+        --blue-glow:#1e40af;
+        --gold:#ffd700;
+        --gold-soft:#fff3b0;
+        --gold-dark:#a6790a;
+        --green:#1fae4b;
+        --red:#d92b2b;
+        --text:#eaf1ff;
+    }
+
+    *{ margin:0; padding:0; box-sizing:border-box; }
+
+    html,body{ height:100%; }
+
+    body{
+        font-family:'Segoe UI', Arial, Helvetica, sans-serif;
+        color:var(--text);
+        min-height:100vh;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        padding:24px 16px;
+        /* Radial "stage spotlight" behind everything, like the show's studio lighting */
+        background:
+            radial-gradient(circle at 50% 15%, rgba(30,64,175,0.55), transparent 55%),
+            radial-gradient(circle at 50% 100%, rgba(18,48,115,0.4), transparent 60%),
+            linear-gradient(180deg, var(--navy-deepest), var(--navy-deep) 60%, var(--navy-deepest));
+    }
+
+    .stage{ width:100%; max-width:1080px; }
+
+    /* ---------- Header ---------- */
+    .show-header{ text-align:center; margin-bottom:22px; }
+
+    .show-title{
+        font-size:clamp(26px, 5vw, 44px);
+        font-weight:900;
+        letter-spacing:2px;
+        text-transform:uppercase;
+        background:linear-gradient(180deg, #fff8dc 10%, var(--gold) 55%, var(--gold-dark));
+        -webkit-background-clip:text;
+        background-clip:text;
+        color:transparent;
+        filter:drop-shadow(0 0 14px rgba(255,215,0,0.35));
+    }
+
+    .show-subtitle{
+        margin-top:6px;
+        font-size:14px;
+        letter-spacing:3px;
+        text-transform:uppercase;
+        color:#9fb3e8;
+    }
+
+    /* ---------- Lifelines ---------- */
+    .lifelines{
+        display:flex;
+        justify-content:center;
+        gap:18px;
+        margin:20px 0;
+    }
+
+    .lifeline{
+        width:64px; height:64px;
+        border-radius:50%;
+        display:flex; align-items:center; justify-content:center;
+        background:radial-gradient(circle at 35% 30%, var(--navy-light), var(--navy));
+        border:2px solid var(--gold-dark);
+        color:var(--gold-soft);
+        cursor:pointer;
+        transition:transform .15s ease, box-shadow .15s ease, border-color .15s ease;
+        position:relative;
+    }
+
+    .lifeline svg{ width:26px; height:26px; fill:currentColor; }
+    .lifeline span.label-5050{ font-size:11px; font-weight:700; }
+
+    .lifeline:hover:not(:disabled){
+        border-color:var(--gold);
+        box-shadow:0 0 16px rgba(255,215,0,0.55);
+        transform:translateY(-2px);
+    }
+
+    .lifeline:disabled{
+        opacity:0.35;
+        cursor:not-allowed;
+        filter:grayscale(1);
+    }
+
+    /* Hint panel shows lifeline results in-theme, instead of a browser alert */
+    .hint-panel{
+        max-width:620px;
+        margin:0 auto 18px;
+        background:rgba(7,22,66,0.85);
+        border:1px solid var(--gold-dark);
+        border-radius:10px;
+        padding:12px 16px;
+        font-size:14px;
+        color:var(--gold-soft);
+        text-align:center;
+        display:none;
+    }
+    .hint-panel.visible{ display:block; }
+    .audience-bar-row{ display:flex; align-items:center; gap:8px; margin:4px 0; text-align:left; }
+    .audience-bar-track{ flex:1; height:14px; background:var(--navy); border-radius:4px; overflow:hidden; }
+    .audience-bar-fill{ height:100%; background:linear-gradient(90deg, var(--gold-dark), var(--gold)); }
+
+    /* ---------- Main layout: question column + ladder column ---------- */
+    .main-area{
+        display:grid;
+        grid-template-columns:1fr 260px;
+        gap:26px;
+        align-items:start;
+    }
+
+    /* ---------- Question hexagon plate ---------- */
+    .hex-frame{
+        background:linear-gradient(135deg, var(--gold-dark), var(--gold-soft), var(--gold-dark));
+        clip-path:polygon(2.5% 0%, 97.5% 0%, 100% 50%, 97.5% 100%, 2.5% 100%, 0% 50%);
+        padding:3px;
+        margin-bottom:16px;
+    }
+    .hex-inner{
+        background:linear-gradient(180deg, var(--navy-light), var(--navy));
+        clip-path:polygon(2.5% 0%, 97.5% 0%, 100% 50%, 97.5% 100%, 2.5% 100%, 0% 50%);
+        padding:26px 40px;
+    }
+
+    .question-eyebrow{
+        font-size:12px;
+        letter-spacing:2px;
+        text-transform:uppercase;
+        color:var(--gold);
+        margin-bottom:8px;
+        font-weight:700;
+    }
+
+    .question-text{
+        font-size:19px;
+        font-weight:600;
+        line-height:1.45;
+        text-align:center;
+    }
+
+    /* ---------- Answer plates (2x2 hexagons) ---------- */
+    .options-grid{
+        display:grid;
+        grid-template-columns:1fr 1fr;
+        gap:14px;
+        margin-bottom:18px;
+    }
+
+    .option-frame{
+        background:linear-gradient(135deg, var(--gold-dark), var(--gold));
+        clip-path:polygon(4% 0%, 96% 0%, 100% 50%, 96% 100%, 4% 100%, 0% 50%);
+        padding:2.5px;
+        cursor:pointer;
+        transition:transform .12s ease;
+    }
+    .option-frame:hover{ transform:translateY(-2px); }
+
+    .option-inner{
+        background:linear-gradient(180deg, var(--navy-light), var(--navy));
+        clip-path:polygon(4% 0%, 96% 0%, 100% 50%, 96% 100%, 4% 100%, 0% 50%);
+        padding:16px 34px;
+        display:flex;
+        align-items:center;
+        gap:10px;
+        font-size:15px;
+        font-weight:500;
+    }
+
+    .option-letter{ color:var(--gold); font-weight:800; }
+
+    /* Selected but not yet locked in */
+    .option-frame.selected .option-inner{ background:linear-gradient(180deg, #7a3d00, #4a2400); }
+    .option-frame.selected{ background:linear-gradient(135deg, #ff8c00, #ffb347); }
+
+    /* Locked-in, awaiting reveal: pulsing suspense glow */
+    .option-frame.locked{ animation:pulseGlow 0.8s ease-in-out infinite alternate; }
+    @keyframes pulseGlow{
+        from{ filter:brightness(1); }
+        to{ filter:brightness(1.5); }
+    }
+
+    /* Reveal states */
+    .option-frame.correct{ background:linear-gradient(135deg, #0f7a2e, var(--green)); }
+    .option-frame.correct .option-inner{ background:linear-gradient(180deg, #0c5c22, #073d17); }
+    .option-frame.wrong{ background:linear-gradient(135deg, #7a0f0f, var(--red)); }
+    .option-frame.wrong .option-inner{ background:linear-gradient(180deg, #5c0c0c, #3d0707); }
+
+    .option-frame.disabled-look{ pointer-events:none; opacity:0.3; filter:grayscale(0.6); }
+
+    /* ---------- Action buttons ---------- */
+    .action-row{ display:flex; gap:12px; justify-content:center; margin-top:6px; }
+
+    .btn{
+        padding:12px 26px;
+        font-size:14px;
+        font-weight:800;
+        letter-spacing:1px;
+        text-transform:uppercase;
+        border-radius:8px;
+        border:2px solid var(--gold-dark);
+        cursor:pointer;
+        background:linear-gradient(180deg, var(--navy-light), var(--navy));
+        color:var(--gold-soft);
+        transition:all .15s ease;
+    }
+    .btn:hover:not(:disabled){ border-color:var(--gold); box-shadow:0 0 14px rgba(255,215,0,0.4); }
+    .btn:disabled{ opacity:0.35; cursor:not-allowed; }
+
+    .btn-final{ background:linear-gradient(180deg, #8a3d00, #5c2800); border-color:var(--gold); }
+    .btn-continue{ background:linear-gradient(180deg, #0c5c22, #073d17); border-color:var(--green); }
+
+    /* ---------- Money ladder ---------- */
+    .ladder{
+        background:rgba(2,10,31,0.6);
+        border:1px solid var(--navy-light);
+        border-radius:10px;
+        padding:10px;
+        display:flex;
+        flex-direction:column-reverse;
+        gap:4px;
+    }
+
+    .ladder-row{
+        display:flex;
+        justify-content:space-between;
+        padding:7px 10px;
+        border-radius:6px;
+        font-size:13px;
+        font-weight:600;
+        color:#8ea0d6;
+    }
+
+    .ladder-row .lv{ opacity:0.7; }
+
+    .ladder-row.milestone{
+        border-top:1px solid var(--gold-dark);
+        border-bottom:1px solid var(--gold-dark);
+        color:var(--gold-soft);
+    }
+
+    .ladder-row.passed{ background:rgba(31,174,75,0.15); color:#8fe6a8; }
+
+    .ladder-row.current{
+        background:linear-gradient(90deg, var(--gold-dark), var(--gold));
+        color:#241900;
+        box-shadow:0 0 14px rgba(255,215,0,0.5);
+        transform:scale(1.03);
+    }
+
+    /* ---------- Overlay (game over / walk away / winner) ---------- */
+    .overlay{
+        position:fixed; inset:0;
+        background:rgba(0,3,8,0.86);
+        display:none;
+        align-items:center;
+        justify-content:center;
+        z-index:50;
+        padding:20px;
+    }
+    .overlay.visible{ display:flex; }
+
+    .overlay-card{
+        max-width:480px;
+        width:100%;
+        text-align:center;
+        background:linear-gradient(180deg, var(--navy-light), var(--navy-deep));
+        border:2px solid var(--gold);
+        border-radius:16px;
+        padding:34px 28px;
+        box-shadow:0 0 40px rgba(255,215,0,0.25);
+    }
+
+    .overlay-title{
+        font-size:24px;
+        font-weight:900;
+        text-transform:uppercase;
+        letter-spacing:1px;
+        margin-bottom:10px;
+    }
+    .overlay-title.lost{ color:var(--red); }
+    .overlay-title.won{ color:var(--gold); }
+    .overlay-title.walk{ color:#9fb3e8; }
+
+    .overlay-amount{ font-size:34px; font-weight:800; color:var(--gold); margin:14px 0; }
+    .overlay-detail{ font-size:14px; color:#b8c6ea; margin-bottom:20px; line-height:1.5; }
+    .overlay-countdown{ font-size:13px; color:#7f90bd; margin-bottom:14px; }
+
+    /* ---------- Responsive ---------- */
+    @media (max-width:760px){
+        .main-area{ grid-template-columns:1fr; }
+        .ladder{
+            flex-direction:row;
+            overflow-x:auto;
+            gap:6px;
+        }
+        .ladder-row{ flex-direction:column; align-items:center; min-width:74px; }
+        .hex-inner{ padding:20px 18px; }
+        .option-inner{ padding:14px 18px; font-size:13.5px; }
+        .options-grid{ grid-template-columns:1fr; }
+    }
+</style>
+</head>
+<body>
+<div class="stage">
+
+    <div class="show-header">
+        <div class="show-title">Who Wants to Be an Assembly Millionaire</div>
+        <div class="show-subtitle">Assembly Language Edition</div>
+    </div>
+
+    <!-- Lifelines: styled as the show's circular icon badges -->
+    <div class="lifelines">
+        <button class="lifeline" id="btnFifty" onclick="useFiftyFifty()" title="50:50">
+            <span class="label-5050">50:50</span>
+        </button>
+        <button class="lifeline" id="btnPhone" onclick="usePhoneFriend()" title="Phone a Friend">
+            <svg viewBox="0 0 24 24"><path d="M6.6 10.8c1.4 2.8 3.8 5.1 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1C10.6 21 3 13.4 3 4c0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.3 0 .7-.2 1L6.6 10.8z"/></svg>
+        </button>
+        <button class="lifeline" id="btnAudience" onclick="useAudience()" title="Ask the Audience">
+            <svg viewBox="0 0 24 24"><path d="M4 20v-2c0-2.2 3.6-4 8-4s8 1.8 8 4v2H4zm8-9a3.5 3.5 0 1 1 0-7 3.5 3.5 0 0 1 0 7zM2 20v-1.5C2 16.6 4.4 15 7 15c.3 0 .6 0 1 .1-1.2.9-2 2.1-2 3.4V20H2zm22 0h-4v-1.5c0-1.3-.8-2.5-2-3.4.4-.1.7-.1 1-.1 2.6 0 5 1.6 5 3.5V20zM7 5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5zm10 0a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5z"/></svg>
+        </button>
+    </div>
+
+    <!-- Themed panel showing lifeline results instead of a browser alert() -->
+    <div class="hint-panel" id="hintPanel"></div>
+
+    <div class="main-area">
+        <!-- Question + answers column -->
+        <div>
+            <div class="hex-frame">
+                <div class="hex-inner">
+                    <div class="question-eyebrow" id="questionEyebrow">Question 1</div>
+                    <div class="question-text" id="questionText"></div>
+                </div>
+            </div>
+
+            <div class="options-grid" id="optionsGrid"></div>
+
+            <div class="action-row">
+                <button class="btn" id="btnWalkAway" onclick="walkAway()">Walk Away</button>
+                <button class="btn btn-final" id="btnFinal" onclick="lockInFinalAnswer()" disabled>Final Answer</button>
+                <button class="btn btn-continue" id="btnContinue" onclick="continueToNext()" style="display:none;">Continue</button>
+            </div>
+        </div>
+
+        <!-- Money ladder column -->
+        <div class="ladder" id="ladder"></div>
+    </div>
+</div>
+
+<!-- End-of-game overlay: wrong answer, walked away, or won it all -->
+<div class="overlay" id="overlay">
+    <div class="overlay-card">
+        <div class="overlay-title" id="overlayTitle">Game Over</div>
+        <div class="overlay-detail" id="overlayDetail"></div>
+        <div class="overlay-amount" id="overlayAmount"></div>
+        <div class="overlay-countdown" id="overlayCountdown"></div>
+        <button class="btn btn-final" onclick="playAgainNow()">Play Again Now</button>
+    </div>
+</div>
+
+<script>
+    // ============================================
+    // QUESTION BANK
+    // Covers all five requested topics. A fresh set
+    // of 10 is shuffled from this pool every game.
+    // ============================================
+    const questionDatabase = [
+        { topic:"The levels of programming languages", question:"Which of the following best represents the hierarchy of programming language levels from lowest to highest?",
+          options:["Machine Code → Assembly → High-Level","High-Level → Assembly → Machine Code","Assembly → High-Level → Machine Code","Machine Code → High-Level → Assembly"], correct:0 },
+        { topic:"The levels of programming languages", question:"What is the lowest level programming language closest to machine operations?",
+          options:["Python","Assembly Language","C++","Java"], correct:1 },
+        { topic:"The levels of programming languages", question:"Which language is considered a high-level language?",
+          options:["Assembly","Machine Code","Python","Hexadecimal"], correct:2 },
+        { topic:"The levels of programming languages", question:"Machine code consists primarily of which type of values?",
+          options:["Alphabetic characters","Hexadecimal numbers","Binary digits (0s and 1s)","ASCII symbols"], correct:2 },
+
+        { topic:"What is Assembly Language", question:"What is Assembly Language?",
+          options:["A high-level language similar to Python","A low-level language with mnemonics that directly represent machine instructions","A compiled language for web development","A scripting language for automation"], correct:1 },
+        { topic:"What is Assembly Language", question:"What are mnemonics in Assembly Language?",
+          options:["Memory addresses used by the CPU","Short abbreviations representing machine code instructions","Variables declared in the program","Binary sequences for compilation"], correct:1 },
+        { topic:"What is Assembly Language", question:"Which of these is a typical Assembly Language mnemonic?",
+          options:["class","function","MOV","import"], correct:2 },
+        { topic:"What is Assembly Language", question:"What is the purpose of an assembler?",
+          options:["To compile high-level code to machine code","To translate Assembly Language mnemonics into machine code","To optimize program performance","To manage system memory allocation"], correct:1 },
+
+        { topic:"Why learn assembly language", question:"Why would a modern programmer want to learn Assembly Language?",
+          options:["It's easier to read than high-level languages","To understand how computers work at a fundamental level","Because all programs are written in Assembly","It's required for web development"], correct:1 },
+        { topic:"Why learn assembly language", question:"What is one key reason Assembly Language is still taught today?",
+          options:["It's the primary language for Android development","It helps programmers understand CPU architecture and memory management","It's easier to debug than Python","It provides automatic garbage collection"], correct:1 },
+        { topic:"Why learn assembly language", question:"Which field especially benefits from Assembly Language knowledge?",
+          options:["Web design and UI development","Embedded systems and systems programming","Mobile app development","Game theory research"], correct:1 },
+        { topic:"Why learn assembly language", question:"Learning Assembly Language helps programmers understand which aspect of computers?",
+          options:["Network protocols","How data structures work","The interaction between software and hardware","Database design"], correct:2 },
+
+        { topic:"Advantages of Assembly Language", question:"What is a major advantage of Assembly Language?",
+          options:["It has the simplest syntax","It provides direct control over hardware resources","It automatically manages memory","It's platform-independent"], correct:1 },
+        { topic:"Advantages of Assembly Language", question:"Which of these is an advantage of Assembly Language programming?",
+          options:["Faster development time","Automatic error checking","Direct hardware manipulation for optimal performance","Built-in security features"], correct:2 },
+        { topic:"Advantages of Assembly Language", question:"How does Assembly Language compare to high-level languages in terms of execution speed?",
+          options:["It's always slower","It's always faster","It can be highly optimized for maximum performance with direct hardware access","There's no difference"], correct:2 },
+        { topic:"Advantages of Assembly Language", question:"What does Assembly Language allow programmers to do that high-level languages often restrict?",
+          options:["Create dynamic websites","Directly access and manipulate CPU registers and memory","Implement object-oriented design patterns","Handle concurrent programming easily"], correct:1 },
+
+        { topic:"Reasons for using assembly language", question:"In what scenario would using Assembly Language be most justified?",
+          options:["Building a desktop application with a GUI","Optimizing performance-critical code for a microcontroller","Creating a web application","Managing a large database"], correct:1 },
+        { topic:"Reasons for using assembly language", question:"Which of these is a valid reason to use Assembly Language?",
+          options:["It's easier to maintain than other languages","When code must interface directly with hardware or meet strict performance requirements","It's required by all modern operating systems","It prevents all security vulnerabilities"], correct:1 },
+        { topic:"Reasons for using assembly language", question:"Why might Assembly Language be used in bootloaders and firmware?",
+          options:["Because it has better documentation","Because it requires direct control over hardware and runs before any operating system","Because it's easier to write than C","Because it provides automatic memory management"], correct:1 },
+        { topic:"Reasons for using assembly language", question:"For which type of application is Assembly Language most commonly used today?",
+          options:["Social media platforms","Mobile games","Operating systems, embedded systems, and performance-critical code","Content management systems"], correct:2 }
+    ];
+
+    // Prize ladder, lowest (index 0) to highest (index 9).
+    const prizes = ["$100","$200","$500","$1,000","$2,000","$5,000","$10,000","$32,000","$64,000","$1,000,000"];
+
+    // Indices (0-based) that act as "guaranteed" safety-net levels, like the real show.
+    const milestoneIndices = [3, 7]; // i.e. after Question 4 and Question 8
+
+    // ============================================
+    // GAME STATE
+    // ============================================
+    let shuffledQuestions = [];
+    let currentQuestion = 0;
+    let selectedIndex = null;
+    let locked = false;
+    let gameEnded = false;
+    let usedLifelines = { fifty:false, phone:false, audience:false };
+    let countdownInterval = null;
+
+    function shuffle(arr){
+        return [...arr].sort(() => Math.random() - 0.5);
+    }
+
+    // ============================================
+    // INIT / RESTART
+    // Called on page load and whenever the game
+    // needs to reset (wrong answer, walk away, win).
+    // ============================================
+    function initGame(){
+        shuffledQuestions = shuffle(questionDatabase).slice(0, 10);
+        currentQuestion = 0;
+        selectedIndex = null;
+        locked = false;
+        gameEnded = false;
+        usedLifelines = { fifty:false, phone:false, audience:false };
+
+        clearInterval(countdownInterval);
+        document.getElementById('overlay').classList.remove('visible');
+        document.getElementById('hintPanel').classList.remove('visible');
+
+        // Re-enable lifeline buttons for the new game
+        document.getElementById('btnFifty').disabled = false;
+        document.getElementById('btnPhone').disabled = false;
+        document.getElementById('btnAudience').disabled = false;
+
+        renderQuestion();
+    }
+
+    // ============================================
+    // RENDER: money ladder
+    // Top-to-bottom = highest prize to lowest, like
+    // the real show's ladder graphic.
+    // ============================================
+    function renderLadder(){
+        const ladder = document.getElementById('ladder');
+        ladder.innerHTML = '';
+        for(let i = 0; i < prizes.length; i++){
+            const row = document.createElement('div');
+            row.className = 'ladder-row';
+            if(milestoneIndices.includes(i)) row.classList.add('milestone');
+            if(i < currentQuestion) row.classList.add('passed');
+            if(i === currentQuestion && !gameEnded) row.classList.add('current');
+            row.innerHTML = `<span class="lv">${i+1}</span><span>${prizes[i]}</span>`;
+            ladder.appendChild(row);
+        }
+    }
+
+    // ============================================
+    // RENDER: current question + answer plates
+    // ============================================
+    function renderQuestion(){
+        const q = shuffledQuestions[currentQuestion];
+        selectedIndex = null;
+        locked = false;
+
+        document.getElementById('questionEyebrow').textContent =
+            `Question ${currentQuestion + 1} for ${prizes[currentQuestion]} — ${q.topic}`;
+        document.getElementById('questionText').textContent = q.question;
+
+        const grid = document.getElementById('optionsGrid');
+        grid.innerHTML = '';
+        q.options.forEach((opt, i) => {
+            const frame = document.createElement('div');
+            frame.className = 'option-frame';
+            frame.id = `opt-${i}`;
+            frame.onclick = () => selectOption(i);
+            frame.innerHTML = `
+                <div class="option-inner">
+                    <span class="option-letter">${String.fromCharCode(65+i)}</span>
+                    <span>${opt}</span>
+                </div>`;
+            grid.appendChild(frame);
+        });
+
+        document.getElementById('btnFinal').disabled = true;
+        document.getElementById('btnFinal').style.display = 'inline-block';
+        document.getElementById('btnContinue').style.display = 'none';
+        document.getElementById('btnWalkAway').disabled = false;
+        document.getElementById('hintPanel').classList.remove('visible');
+
+        renderLadder();
+    }
+
+    // ============================================
+    // PLAYER SELECTS AN ANSWER (not locked in yet)
+    // ============================================
+    function selectOption(i){
+        if(locked || gameEnded) return;
+        if(document.getElementById(`opt-${i}`).classList.contains('disabled-look')) return;
+
+        selectedIndex = i;
+        document.querySelectorAll('.option-frame').forEach((el, idx) => {
+            el.classList.toggle('selected', idx === i);
+        });
+        document.getElementById('btnFinal').disabled = false;
+    }
+
+    // ============================================
+    // LOCK IN FINAL ANSWER
+    // Adds a suspenseful pulsing pause before reveal,
+    // just like the show's dramatic beat.
+    // ============================================
+    function lockInFinalAnswer(){
+        if(selectedIndex === null || locked || gameEnded) return;
+        locked = true;
+
+        document.getElementById('btnFinal').disabled = true;
+        document.getElementById('btnWalkAway').disabled = true;
+        document.querySelectorAll('.lifeline').forEach(b => b.disabled = true);
+        document.getElementById(`opt-${selectedIndex}`).classList.add('locked');
+
+        setTimeout(revealAnswer, 1500);
+    }
+
+    // ============================================
+    // REVEAL CORRECT ANSWER
+    // ============================================
+    function revealAnswer(){
+        const q = shuffledQuestions[currentQuestion];
+        document.getElementById(`opt-${selectedIndex}`).classList.remove('locked');
+        document.getElementById(`opt-${q.correct}`).classList.add('correct');
+
+        if(selectedIndex === q.correct){
+            renderLadder(); // mark this level as passed
+            if(currentQuestion === shuffledQuestions.length - 1){
+                endGame('won', prizes[currentQuestion]);
+            } else {
+                document.getElementById('btnContinue').style.display = 'inline-block';
+                document.getElementById('btnFinal').style.display = 'none';
+            }
+        } else {
+            document.getElementById(`opt-${selectedIndex}`).classList.add('wrong');
+            let guaranteed = "$0";
+            milestoneIndices.forEach(m => { if(currentQuestion > m) guaranteed = prizes[m]; });
+            endGame('lost', guaranteed, q.options[q.correct]);
+        }
+
+        // Re-enable unused lifelines only if the game is continuing
+        if(!gameEnded){
+            if(!usedLifelines.fifty) document.getElementById('btnFifty').disabled = false;
+            if(!usedLifelines.phone) document.getElementById('btnPhone').disabled = false;
+            if(!usedLifelines.audience) document.getElementById('btnAudience').disabled = false;
+        }
+    }
+
+    function continueToNext(){
+        currentQuestion++;
+        renderQuestion();
+    }
+
+    // ============================================
+    // WALK AWAY
+    // Ends the game keeping the last secured prize.
+    // ============================================
+    function walkAway(){
+        if(locked || gameEnded) return;
+        const amount = currentQuestion > 0 ? prizes[currentQuestion - 1] : "$0";
+        endGame('walk', amount);
+    }
+
+    // ============================================
+    // END GAME (lost / walked away / won it all)
+    // A wrong answer here triggers the required
+    // automatic reset back to Question 1.
+    // ============================================
+    function endGame(type, amount, correctAnswerText){
+        gameEnded = true;
+        document.querySelectorAll('.option-frame').forEach(el => el.classList.add('disabled-look'));
+        document.getElementById('btnFinal').disabled = true;
+        document.getElementById('btnWalkAway').disabled = true;
+        document.querySelectorAll('.lifeline').forEach(b => b.disabled = true);
+        renderLadder();
+
+        const titleEl = document.getElementById('overlayTitle');
+        const detailEl = document.getElementById('overlayDetail');
+        const amountEl = document.getElementById('overlayAmount');
+
+        if(type === 'lost'){
+            titleEl.textContent = "Wrong Answer!";
+            titleEl.className = 'overlay-title lost';
+            detailEl.textContent = `The correct answer was "${correctAnswerText}". You leave with:`;
+        } else if(type === 'walk'){
+            titleEl.textContent = "You Walked Away";
+            titleEl.className = 'overlay-title walk';
+            detailEl.textContent = "Smart move or missed opportunity? Either way, you keep:";
+        } else {
+            titleEl.textContent = "Assembly Millionaire!";
+            titleEl.className = 'overlay-title won';
+            detailEl.textContent = "You answered every question correctly! You won:";
+        }
+        amountEl.textContent = amount;
+
+        document.getElementById('overlay').classList.add('visible');
+        startAutoRestartCountdown(type === 'won' ? 8 : 5);
+    }
+
+    // ============================================
+    // AUTO-RESTART COUNTDOWN
+    // Fulfils "when the player loses, the game resets"
+    // — applies to every end state for consistency.
+    // ============================================
+    function startAutoRestartCountdown(seconds){
+        let remaining = seconds;
+        const el = document.getElementById('overlayCountdown');
+        el.textContent = `New game starts automatically in ${remaining}s...`;
+        clearInterval(countdownInterval);
+        countdownInterval = setInterval(() => {
+            remaining--;
+            if(remaining <= 0){
+                clearInterval(countdownInterval);
+                initGame();
+            } else {
+                el.textContent = `New game starts automatically in ${remaining}s...`;
+            }
+        }, 1000);
+    }
+
+    function playAgainNow(){
+        clearInterval(countdownInterval);
+        initGame();
+    }
+
+    // ============================================
+    // LIFELINE: 50:50 — grays out two wrong answers
+    // ============================================
+    function useFiftyFifty(){
+        if(usedLifelines.fifty || locked || gameEnded) return;
+        usedLifelines.fifty = true;
+        document.getElementById('btnFifty').disabled = true;
+
+        const q = shuffledQuestions[currentQuestion];
+        let removed = 0;
+        for(let i = 0; i < q.options.length && removed < 2; i++){
+            if(i !== q.correct && i !== selectedIndex){
+                document.getElementById(`opt-${i}`).classList.add('disabled-look');
+                removed++;
+            }
+        }
+        showHint("50:50 used — two incorrect answers have been removed.");
+    }
+
+    // ============================================
+    // LIFELINE: Phone a Friend — themed text hint
+    // ============================================
+    function usePhoneFriend(){
+        if(usedLifelines.phone || locked || gameEnded) return;
+        usedLifelines.phone = true;
+        document.getElementById('btnPhone').disabled = true;
+
+        const q = shuffledQuestions[currentQuestion];
+        const lines = [
+            `"I'm fairly confident it's ${String.fromCharCode(65+q.correct)}: ${q.options[q.correct]}."`,
+            `"I've seen this before — I'd go with ${String.fromCharCode(65+q.correct)}."`,
+            `"Not 100% sure, but my gut says ${String.fromCharCode(65+q.correct)}."`
+        ];
+        const pick = lines[Math.floor(Math.random() * lines.length)];
+        showHint(`<strong>Phone a Friend:</strong> ${pick}`);
+    }
+
+    // ============================================
+    // LIFELINE: Ask the Audience — themed bar chart
+    // ============================================
+    function useAudience(){
+        if(usedLifelines.audience || locked || gameEnded) return;
+        usedLifelines.audience = true;
+        document.getElementById('btnAudience').disabled = true;
+
+        const q = shuffledQuestions[currentQuestion];
+        const raw = q.options.map((_, i) => i === q.correct
+            ? Math.floor(Math.random() * 30) + 50   // 50-79% for the correct answer
+            : Math.floor(Math.random() * 20));       // 0-19% for the rest
+        const total = raw.reduce((a,b) => a+b, 0);
+        const pct = raw.map(v => Math.round((v/total) * 100));
+
+        let html = '<strong>Ask the Audience:</strong>';
+        q.options.forEach((_, i) => {
+            html += `
+                <div class="audience-bar-row">
+                    <span style="width:16px;">${String.fromCharCode(65+i)}</span>
+                    <div class="audience-bar-track"><div class="audience-bar-fill" style="width:${pct[i]}%"></div></div>
+                    <span style="width:34px; text-align:right;">${pct[i]}%</span>
+                </div>`;
+        });
+        showHint(html);
+    }
+
+    function showHint(html){
+        const panel = document.getElementById('hintPanel');
+        panel.innerHTML = html;
+        panel.classList.add('visible');
+    }
+
+    // Start the show once the page has loaded
+    window.addEventListener('load', initGame);
+</script>
+</body>
+</html>
